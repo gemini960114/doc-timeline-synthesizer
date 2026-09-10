@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=77", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "doc-timeline-synthesizer"
+version = "1.0.0"
+description = "Multi-document chronological deduplication, denoising, and knowledge synthesis skill on top of docling-skill."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [
+  { name = "CHAOCHUN CHUANG", email = "gemini960114@gmail.com" },
+]
+dependencies = [
+  "docling-skill @ git+https://github.com/realraelrr/docling-skill.git@v2.0.0",
+]
+
+[project.scripts]
+doc-timeline-synthesizer = "scripts.synthesize:main"

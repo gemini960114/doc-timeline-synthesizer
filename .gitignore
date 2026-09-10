@@ -1,0 +1,13 @@
+# Local data, intermediate outputs, and working files
+chronological_inventory.md
+process.md
+*最新拍板數據與時間序總整理.md
+*.log
+output/
+data/
+.venv/
+__pycache__/
+*.egg-info/
+dist/
+build/
+.DS_Store
