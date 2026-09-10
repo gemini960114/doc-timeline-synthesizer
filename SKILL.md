@@ -78,24 +78,32 @@ output/ （各自獨立累積與蒸餾）
 
 ## 標準執行步驟（Execution Steps）
 
-### 步驟一：呼叫預備健檢與時序排序腳本
+### 步驟一：來源可信度分級檢查（Source Trust Gate）
+在讀取任何 `source.md` 內容之前，Agent 必須先檢查其同目錄下的 `source.manifest.json`：
+1. 讀取 `decision.status`、`decision.agent_ready`、`decision.risk_level` 三個欄位。若 `agent_ready: false` 或 `risk_level: "high"`（常見於 `reasons` 含 `page_quality_failed` 或 `high_ocr_noise` 的 PDF／OCR 來源），該文件視為**高風險來源**，不得直接當作可信引用依據。
+2. 對高風險來源，`manifest.json` 的 `decision.read_order` 通常會將 `source.evidence.json` 排在 `source.md` 之前——Agent 必須依此順序，先讀 `evidence.json` 中的 `quality.signals`（尤其 `page_coverage.failed_pages`、`text_integrity`、`table_fragment_signal`）了解問題範圍，再決定如何使用該文件。
+3. 高風險來源中的表格數字（尤其合併儲存格常被拆散、欄位錯位，例如「小計」被拆成「小」「計」兩欄），**引用前須人工比對表格欄位是否對齊**，不可逕行信任自動解析結果。
+4. `risk_level: "medium"` 的來源仍可正常使用，但若 `warnings` 含 `replacement_characters`，應快速搜尋內文是否仍殘留替代字元（`U+FFFD`／`�`），確認實際受影響範圍。
+5. 凡引用自高風險來源的數字，於《總整理.md》的 Citation 欄位須額外標註「⚠ 來源標記高風險，已人工複核」或「⚠ 來源標記高風險，待複核」，讓下游使用者知悉可信度落差，不得以「已涵蓋重點」為由略過揭露。
+
+### 步驟二：呼叫預備健檢與時序排序腳本
 ```bash
 python3 scripts/synthesize.py --input-dir "./output" --output-file "chronological_inventory.md"
 ```
 * 腳本將產出時序總表、字元數統計、文件品質狀態，並顯式列出未定時間（UNDATED）之文件以供人工檢視。
 
-### 步驟二：LLM 認知蒸餾與報告撰寫
+### 步驟三：LLM 認知蒸餾與報告撰寫
 Agent 讀取 `chronological_inventory.md` 與各關鍵文檔，依據本規範執行：
 1. 建立「單一真相數據速查表」，標記出處來源。
 2. 將各計畫依主題分組，清楚區隔【最新拍板現況】與【質疑及演進時間軸】。
 3. 杜絕新舊數值混淆，大幅降低 RAG 與下游應用的幻覺風險。
 
 > [!IMPORTANT]
-> `chronological_inventory.md` 之「關鍵指標初篩片段」僅為每份文件開頭數百字的截斷預覽，**不可作為蒸餾之唯一依據**。對字元數龐大（如超過 5 萬字）之 `source.md`（常見於綱要計畫書、歲出概況表等），Agent 必須完整讀畢全文，逐一核對文件中所有指標版本，才能執行步驟三。僅依賴片段摘要進行蒸餾，是導致「新舊數值混拼」與「指標漏抓」的主要成因。
+> `chronological_inventory.md` 之「關鍵指標初篩片段」僅為每份文件開頭數百字的截斷預覽，**不可作為蒸餾之唯一依據**。對字元數龐大（如超過 5 萬字）之 `source.md`（常見於綱要計畫書、歲出概況表等），Agent 必須完整讀畢全文，逐一核對文件中所有指標版本，才能執行步驟四。僅依賴片段摘要進行蒸餾，是導致「新舊數值混拼」與「指標漏抓」的主要成因。
 
-### 步驟三：抽樣回溯驗證（Spot-Check Verification）
+### 步驟四：抽樣回溯驗證（Spot-Check Verification）
 報告初稿完成後，Agent 須自行執行以下品管動作，作為蒸餾完工的必要條件（而非選配）：
-1. 從《總整理.md》的「單一真相數據速查表」與「深度剖析」章節中，隨機抽取至少 5-8 個具體數字（優先挑選成組出現的多單位指標，例如「MW／PF／PB」同時出現的敘述）。
+1. 從《總整理.md》的「單一真相數據速查表」與「深度剖析」章節中，隨機抽取至少 5-8 個具體數字（優先挑選成組出現的多單位指標，例如「MW／PF／PB」同時出現的敘述；並優先涵蓋步驟一標記為高風險來源的數字）。
 2. 針對每個抽樣數字，回頭以文字檢索（grep 或全文搜尋）比對其來源 `source.md`，確認數值、單位與時間戳三者皆正確對應，且未違反上述「禁止跨時間戳拼接」原則。
 3. 若報告涉及跨領域彙整（金字塔匯總），必須額外確認：來源《總整理.md》中的錯誤是否被原樣複製擴散到匯總簡報，避免同一錯誤重複出現於多份文件。
 4. 將驗證結果（已核實通過 / 發現並修正）簡要列於報告交付紀錄或對話回覆中，作為品質佐證；不得在未完成抽查的情況下逕自宣稱「重點已涵蓋」。
