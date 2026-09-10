@@ -27,7 +27,7 @@
 
 ---
 
-## 🏛️ 雙層架構圖（Two-Tier Pipeline Architecture）
+## 🏛️ 三層架構圖（Three-Tier Pipeline Architecture）
 
 ```text
 [ 原始異質文檔 (DOCX / PDF / XLSX / PPTX / 公文簽呈) ]
@@ -36,7 +36,7 @@
                  【 docling-skill 】
           • 單文檔物理排版解析 (Docling 核心)
           • CJK 亞洲字距清洗與表格結構還原
-          • 產出標準 output/*/source.md + manifest.json
+          • 產出標準 output/*/source.md + manifest.json（含品質風險分級）
                           │
                           ▼ (L2: Synthesis Layer)
              【 doc-timeline-synthesizer 】
@@ -45,9 +45,18 @@
           • 時間序新舊衝突覆寫 (Latest-Date Overwrite)
           • 產出各領域《最新拍板總整理.md》
                           │
+                          ▼ (L3: Audit Layer，獨立 Agent／新 Session)
+              【 doc-timeline-auditor 】
+          • 逆向核對每個 Citation 是否真的可解
+          • 核對來源風險分級是否已如實揭露
+          • 檢測跨時間戳單位拼接、抽查覆蓋率、重算衍生數字
+          • 產出《審核意見.md》：PASS / PASS WITH CAVEATS / FAIL
+                          │
                           ▼
-        [ 下游高精準應用 (NotebookLM / RAG 知識庫 / 首長決策簡報) ]
+   [ 下游高精準應用 (NotebookLM / RAG 知識庫 / 首長決策簡報)，僅限 L3 判定通過之報告 ]
 ```
+
+> **為什麼 L3 要獨立於 L2 之外**：L2 蒸餾 Agent 對自己的產出做自我檢查，天生會傾向驗證自己剛下的結論；真正能抓到「新舊數值拼接」「引用出處錯置」「高風險來源未揭露」這類錯誤的，是一個沒看過蒸餾過程、只看得到「成品報告＋原始語料庫」的全新 Agent。內部草稿或低風險用途可以省略 L3，但任何要送交決策層或對外的報告，強烈建議跑完整三層。
 
 ---
 
@@ -88,7 +97,7 @@ cd doc-timeline-synthesizer && uv sync && cd ..
 
 ### 方式 C：掛載為 AI Agent Skill
 
-本專案根目錄的 `SKILL.md` 符合 Agent 技能規範，可掛載至常用 Agent 工具。
+本專案包含**兩個**符合 Agent 技能規範的 SKILL.md：根目錄的 `doc-timeline-synthesizer`（L2 蒸餾）與子目錄 `doc-timeline-auditor/`（L3 獨立審核）。兩個都要掛載，但**務必在不同的 Agent 對話／Session 裡分別呼叫**——審核不能跟蒸餾共用同一個 context，否則會失去獨立性（詳見上方「三層架構圖」的說明）。
 
 #### 1. 專案層級掛載（Project-Level，推薦，僅在當前專案生效）：
 進入您的業務專案根目錄（Current Folder），建立專案專屬的技能目錄並軟連結：
@@ -99,23 +108,32 @@ cd /path/to/my-project
 # 建立專案層級 skills 目錄（包含 .agents 規範）
 mkdir -p .agents/skills .claude/skills .codex/skills .gemini/skills
 
-# 軟連結 doc-timeline-synthesizer 至各 Agent 目錄
+# 軟連結 doc-timeline-synthesizer（L2 蒸餾）至各 Agent 目錄
 ln -sfn /path/to/doc-timeline-synthesizer .agents/skills/doc-timeline-synthesizer
 ln -sfn /path/to/doc-timeline-synthesizer .claude/skills/doc-timeline-synthesizer
 ln -sfn /path/to/doc-timeline-synthesizer .codex/skills/doc-timeline-synthesizer
 ln -sfn /path/to/doc-timeline-synthesizer .gemini/skills/doc-timeline-synthesizer
+
+# 軟連結 doc-timeline-auditor（L3 獨立審核）至各 Agent 目錄
+ln -sfn /path/to/doc-timeline-synthesizer/doc-timeline-auditor .agents/skills/doc-timeline-auditor
+ln -sfn /path/to/doc-timeline-synthesizer/doc-timeline-auditor .claude/skills/doc-timeline-auditor
+ln -sfn /path/to/doc-timeline-synthesizer/doc-timeline-auditor .codex/skills/doc-timeline-auditor
+ln -sfn /path/to/doc-timeline-synthesizer/doc-timeline-auditor .gemini/skills/doc-timeline-auditor
 ```
 
 #### 2. 全局層級掛載（Global，所有專案皆可使用）：
 ```bash
 # Claude Code
 ln -sfn /path/to/doc-timeline-synthesizer ~/.claude/skills/doc-timeline-synthesizer
+ln -sfn /path/to/doc-timeline-synthesizer/doc-timeline-auditor ~/.claude/skills/doc-timeline-auditor
 
 # OpenAI Codex / CLI
 ln -sfn /path/to/doc-timeline-synthesizer ~/.codex/skills/doc-timeline-synthesizer
+ln -sfn /path/to/doc-timeline-synthesizer/doc-timeline-auditor ~/.codex/skills/doc-timeline-auditor
 
 # Google Antigravity / Gemini CLI
 ln -sfn /path/to/doc-timeline-synthesizer ~/.gemini/config/skills/doc-timeline-synthesizer
+ln -sfn /path/to/doc-timeline-synthesizer/doc-timeline-auditor ~/.gemini/config/skills/doc-timeline-auditor
 ```
 
 ---
@@ -224,6 +242,15 @@ python3 scripts/synthesize.py \
 
 Agent 將依據 `SKILL.md` 規範，產出符合格式契約的 Single Source of Truth 報告。
 
+### 步驟四：L3 獨立審核（交由「另一個」AI Agent 執行）
+
+**另開一個全新的 Agent 對話／Session**（不要延續步驟三的對話），掛載 `doc-timeline-auditor` 技能：
+
+> **對話 Prompt 範例**：
+> 「請依照 `doc-timeline-auditor` 技能規範，審核 `reports/01_財會預算_最新拍板總整理.md`。原始語料庫在 `output/01_財會預算/` 下。請不要假設報告內容正確，逐一回溯每個 Citation 到來源 `source.md`，並檢查對應的 `source.manifest.json` 風險分級是否已如實揭露。」
+
+Agent 會產出《審核意見.md》，總評為 `PASS` / `PASS WITH CAVEATS` / `FAIL` 三選一。**只有前兩者才可以交付下游使用**；`FAIL` 需退回步驟三重新蒸餾。
+
 ---
 
 ## 💡 多領域實戰應用範例（Multi-Domain Case Studies）
@@ -298,6 +325,30 @@ Agent 將依據 `SKILL.md` 規範，產出符合格式契約的 Single Source of
 ```
 
 - **優點**：LLM 處理的文本已全數經過 L2 去雜訊與覆寫，總上下文僅約 6,000 字，合成只需 10 秒，且精準度達到 100%。
+
+---
+
+### 範例五：L3 獨立審核攔截跨時間戳拼接（Audit Catch Case）
+
+- **L2 蒸餾 Agent 的產出**（看似合理，但有問題）：
+  ```markdown
+  | 系統項目 | 118年度終局目標 | 出處來源 Citation |
+  | :--- | :--- | :--- |
+  | **AI 主機建置規模** | **32 PFLOPS（16 MW）** | `1150830_主機採購規範定案` |
+  ```
+  這裡的 `32 PFLOPS` 來自最新的 `1150830_主機採購規範定案`，但 `16 MW` 其實是蒸餾 Agent 從更早的 `1150615_系統架構草案`（配的是舊版 `16 PFLOPS` 目標）沿用過來的——兩個數字時間戳不同，被錯誤拼成同一句「終局目標」。
+
+- **L3 審核 Agent 的《審核意見.md》**：
+  ```markdown
+  ## 稽核發現 #1（FAIL 等級）
+  - **位置**：AI 主機建置規模列
+  - **問題**：跨時間戳單位拼接。32 PFLOPS 出自 1150830（最新），16 MW 出自 1150615（舊版，且該版本搭配的是 16 PFLOPS，非 32 PFLOPS）。
+  - **失效情境**：若首長引用「32 PFLOPS / 16 MW」對外說明，稽核單位回頭查 1150830 會發現查無 16 MW 這個數字，動搖整份報告的可信度。
+  - **建議修正**：回頭確認 1150830 是否有明確標示對應的 MW 數值；若無，應標註「MW 數值尚未見最新版本更新」，不得沿用舊版數字冒充最新資料。
+  ```
+  > 這正是本專案在實戰中真實踩過的錯誤模式（新舊數值混拼）——凡是「多個計量單位共同描述同一指標」的敘述，都是 L3 審核的高優先抽查對象。
+
+---
 
 ---
 

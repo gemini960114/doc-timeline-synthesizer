@@ -1,13 +1,13 @@
 # 專案實戰 SOP：doc-timeline-synthesizer 從零到產出全流程手冊 (process.md)
 
-> **版本**：v1.0.0  
+> **版本**：v1.1.0（新增階段八：L3 獨立審核 doc-timeline-auditor）  
 > **適用環境**：Linux / macOS（支援 Google Antigravity, Claude Code, OpenAI Codex, 多 Agent 框架）  
 > **核心定位**：跨文檔多版次時序聚合、新舊衝突裁決與單一真相（SSOT）提煉標準作業流程。
 
 ---
 
 ## 📑 目錄
-1. [系統雙層架構設計觀念](#1-系統雙層架構設計觀念)
+1. [系統三層架構設計觀念](#1-系統三層架構設計觀念)
 2. [階段零：全新機器前置準備（Python 3.10+ 與 uv）](#2-階段零全新機器前置準備python-310-與-uv)
 3. [階段一：從 GitHub Clone 核心套件與環境初始化](#3-階段一從-github-clone-核心套件與環境初始化)
 4. [階段二：建立新業務專案目錄與資安隔離](#4-階段二建立新業務專案目錄與資安隔離)
@@ -16,22 +16,26 @@
 7. [階段五：執行 L1 物理轉換（docling-skill）](#7-階段五執行-l1-物理轉換docling-skill)
 8. [階段六：執行 L2 時序預備健檢與指標初篩（synthesize.py）](#8-階段六執行-l2-時序預備健檢與指標初篩synthesizepy)
 9. [階段七：交由 AI Agent 執行語意蒸餾與裁決產出](#9-階段七交由-ai-agent-執行語意蒸餾與裁決產出)
-10. [階段八：常見錯誤排查與資安檢查表](#10-階段八常見錯誤排查與資安檢查表)
+10. [階段八：交付獨立審核（L3 Audit，換一個全新 Agent）](#10-階段八交付獨立審核l3-audit換一個全新-agent)
+11. [階段九：常見錯誤排查與資安檢查表](#11-階段九常見錯誤排查與資安檢查表)
 
 ---
 
-## 1. 系統雙層架構設計觀念
+## 1. 系統三層架構設計觀念
 
 在公部門、科技專案與大型組織中，文檔（Word、PDF、公文、題庫、預算書）會歷經數個月的多輪審查。  
 如果將未經時序整理的檔案直接丟給一般 RAG，會導致**「6月提報預算」與「8月拍板定案」同時被撈出，造成 AI 嚴重幻覺**。
 
-本架構切分為兩層：
+本架構切分為三層：
 * **L1 Ingestion Layer（物理轉換層 - `docling-skill`）**：
   * 負責複雜版面解析、表格還原、CJK 亞洲字距去空格修復。
-  * 產出標準且格式統一的 `output/*/source.md` 與品質診斷 `source.manifest.json`。
+  * 產出標準且格式統一的 `output/*/source.md` 與品質診斷 `source.manifest.json`（含 `agent_ready`／`risk_level` 分級）。
 * **L2 Synthesis Layer（認知蒸餾層 - `doc-timeline-synthesizer`）**：
   * 負責**跨文檔時序排序**、**樣板行政雜訊過濾**、**5D 實體抽取**。
   * 核心法則：**「後出文檔數值直接覆寫舊數值（Latest-Date Overwrite）」**，並附帶精準出處標註（Citation）。
+* **L3 Audit Layer（獨立審核層 - `doc-timeline-auditor`）**：
+  * 由**另一個全新 Agent／Session** 執行，不接觸 L2 的推理過程，只拿「成品報告＋原始語料庫」逆向核對。
+  * 專門攔截 L2 自我檢查容易漏掉的錯誤：新舊數值拼接、引用出處錯置、高風險來源未揭露。
 
 ```text
 [ 原始各類公文/報告 ]
@@ -42,9 +46,14 @@
         ▼ (L2: Synthesis)
  【 doc-timeline-synthesizer 】 ── 跨文檔時序排序、新舊數值覆寫，產出《最新拍板總整理.md》
         │
-        ▼
+        ▼ (L3: Audit，換一個全新 Agent／Session)
+ 【 doc-timeline-auditor 】 ── 逆向核對 Citation、來源風險、跨時間戳拼接，產出《審核意見.md》
+        │
+        ▼（僅限 PASS / PASS WITH CAVEATS）
  [ 下游精準應用 ] ── NotebookLM / 高精準 RAG / 首長決策簡報
 ```
+
+> 內部草稿或低風險用途可以只做到 L2；任何要送交決策層、立法院或對外公開的報告，強烈建議一定要跑 L3。
 
 ---
 
@@ -134,17 +143,27 @@ cd ~/github/my-project
 # 步驟 1：先行建立所有 Agent 所需的 skills 父目錄
 mkdir -p .agents/skills .claude/skills .codex/skills .gemini/skills
 
-# 步驟 2：執行軟連結（此時父目錄已齊全，100% 成功）
+# 步驟 2：執行軟連結 doc-timeline-synthesizer（L2 蒸餾，此時父目錄已齊全，100% 成功）
 ln -sfn ~/github/doc-timeline-synthesizer .agents/skills/doc-timeline-synthesizer
 ln -sfn ~/github/doc-timeline-synthesizer .claude/skills/doc-timeline-synthesizer
 ln -sfn ~/github/doc-timeline-synthesizer .codex/skills/doc-timeline-synthesizer
 ln -sfn ~/github/doc-timeline-synthesizer .gemini/skills/doc-timeline-synthesizer
+
+# 步驟 3：另外軟連結 doc-timeline-auditor（L3 獨立審核）
+ln -sfn ~/github/doc-timeline-synthesizer/doc-timeline-auditor .agents/skills/doc-timeline-auditor
+ln -sfn ~/github/doc-timeline-synthesizer/doc-timeline-auditor .claude/skills/doc-timeline-auditor
+ln -sfn ~/github/doc-timeline-synthesizer/doc-timeline-auditor .codex/skills/doc-timeline-auditor
+ln -sfn ~/github/doc-timeline-synthesizer/doc-timeline-auditor .gemini/skills/doc-timeline-auditor
 ```
+
+> **兩個技能都要掛載，但執行時分開用**：`doc-timeline-synthesizer` 在階段七的對話裡呼叫；`doc-timeline-auditor` 要留到階段八，在**另一個全新對話**裡呼叫，不能接續階段七的 context。
 
 ### 驗證掛載：
 ```bash
 ls -la .agents/skills/
-# 預期輸出：doc-timeline-synthesizer -> /home/ubuntu/github/doc-timeline-synthesizer
+# 預期輸出：
+#   doc-timeline-synthesizer -> /home/ubuntu/github/doc-timeline-synthesizer
+#   doc-timeline-auditor -> /home/ubuntu/github/doc-timeline-synthesizer/doc-timeline-auditor
 ```
 
 ---
@@ -267,7 +286,45 @@ python3 ~/github/doc-timeline-synthesizer/scripts/synthesize.py \
 
 ---
 
-## 10. 階段八：常見錯誤排查與資安檢查表
+## 10. 階段八：交付獨立審核（L3 Audit，換一個全新 Agent）
+
+階段七產出的《總整理.md》**只是初稿**，真正決定它能不能交給首長或立法院的，是這一步的獨立審核。
+
+### ⚠️ 關鍵前提：一定要換一個新對話
+如果你在同一個對話視窗裡接著問「幫我審查一下剛剛的報告」，Agent 會**傾向於驗證自己剛剛下的結論**，等於自己審自己的考卷。正確做法：
+1. 開一個全新的 Claude Code / Antigravity / Codex 對話（或用 Agent 工具另起一個 subagent）。
+2. 確認這個新對話已經掛載了 `doc-timeline-auditor`（見階段三）。
+3. 只給它「待審報告路徑」與「原始語料庫路徑」，**不要**貼上階段七的對話紀錄或推理過程。
+
+### Prompt 範本 C：獨立審核已產出的總整理
+
+在**全新對話**中發送：
+
+```text
+請依照已載入的 doc-timeline-auditor 規範，審核 reports/01_財會預算_最新拍板總整理.md。
+
+原始語料庫在 output/01_財會預算/ 下（每份文件皆有 source.md、source.manifest.json、source.evidence.json）。
+
+請不要假設報告內容正確，逐一執行五大稽核維度：
+1. 回溯報告中每一個 Citation 到來源 source.md，確認數字真的存在該檔案中。
+2. 核對每個被引用來源的 source.manifest.json，若 agent_ready 為 false 或 risk_level 為 high，確認報告是否已標註風險。
+3. 找出報告中「多個計量單位共同出現」的敘述（如 MW 與 PF/PB 成組出現），確認是否來自同一份、同一時間戳文件。
+4. 對引用的大型來源文件（字元數 > 5 萬），隨機抽查 2-3 段報告未提及的內容，評估是否有漏抓的重要修正項目。
+5. 獨立重算報告中的加總、佔比、成長率，確認與報告數字一致。
+
+最後產出 reports/01_財會預算_審核意見.md，總評為 PASS / PASS WITH CAVEATS / FAIL 三選一，並列出逐項稽核發現與已核實通過清單。
+```
+
+### 判讀結果：
+- **`PASS`**：可直接交付下游使用。
+- **`PASS WITH CAVEATS`**：可交付，但需在報告中補上審核意見指出的揭露事項（例如標註某數字來自高風險來源）。
+- **`FAIL`**：退回階段七，依審核意見修正後重新蒸餾，再送一次階段八，直到不再是 `FAIL`。
+
+> 金字塔頂層的《全局決策戰略綜合簡報.md》也要比照辦理——用另一個全新對話對它跑一次 `doc-timeline-auditor`，因為它常會原樣複製各領域總整理裡的錯誤，審核時要特別檢查錯誤是否被放大擴散。
+
+---
+
+## 11. 階段九：常見錯誤排查與資安檢查表
 
 ### 常見問題速查：
 1. **問題：`ln: failed to create symbolic link ... No such file or directory`**

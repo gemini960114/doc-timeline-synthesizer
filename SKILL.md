@@ -20,8 +20,14 @@ description: Use when an agent needs to perform multi-document chronological ded
 【doc-timeline-synthesizer】(L2) ── 跨文檔時序排序、語意聚合、新舊衝突裁決，產出《總整理.md》
       │
       ▼
-【下游應用】 ── 高精準 RAG 知識庫 / NotebookLM / 首長決策簡報
+【doc-timeline-auditor】(L3，獨立 Agent／新 Session) ── 逆向核對 Citation、來源風險與跨時間戳拼接，產出《審核意見.md》
+      │
+      ▼
+【下游應用】 ── 高精準 RAG 知識庫 / NotebookLM / 首長決策簡報（僅限 L3 判定 PASS 或 PASS WITH CAVEATS 之報告）
 ```
+
+> [!IMPORTANT]
+> L3 審核**不是** L2 蒸餾流程步驟四「抽樣回溯驗證」的替代品，兩者都要做。步驟四是蒸餾 Agent 對自己產出的初步自檢；L3 是換一個沒看過蒸餾過程的全新 Agent／Session，對成品報告做對抗性複核。高風險或高關注度的報告（例如將送交立法院或首長決策），應在下游使用前完成 L3 審核，詳見 [`doc-timeline-auditor/SKILL.md`](doc-timeline-auditor/SKILL.md)。
 
 > [!NOTE]
 > **工具與大腦分工**：
@@ -108,6 +114,9 @@ Agent 讀取 `chronological_inventory.md` 與各關鍵文檔，依據本規範�
 3. 若報告涉及跨領域彙整（金字塔匯總），必須額外確認：來源《總整理.md》中的錯誤是否被原樣複製擴散到匯總簡報，避免同一錯誤重複出現於多份文件。
 4. 將驗證結果（已核實通過 / 發現並修正）簡要列於報告交付紀錄或對話回覆中，作為品質佐證；不得在未完成抽查的情況下逕自宣稱「重點已涵蓋」。
 
+### 步驟五：交付獨立審核（Hand-off to L3 Audit）
+報告完成步驟四後，對於將送交決策層、立法院或任何對外用途的產出，**另起一個全新 Agent／Session**，掛載 `doc-timeline-auditor` 技能執行審核，取得《審核意見.md》。判定為 `FAIL` 者退回步驟三重新蒸餾；`PASS` 或 `PASS WITH CAVEATS` 者才可交付下游使用。內部草稿或低風險用途可視情況省略此步驟，但仍建議保留步驟四的自我抽查。
+
 ---
 
 ## 交付成果規格（Output Contract）
@@ -117,3 +126,5 @@ Agent 讀取 `chronological_inventory.md` 與各關鍵文檔，依據本規範�
 2. **貳、領域重點數據與既有量能盤點**
 3. **參、各關鍵主題深度剖析**（最新定案 / 爭議焦點 / 時間演進 Changelog）
 4. **肆、下游 RAG 與 NotebookLM 引用指引**
+
+> 若已執行步驟五的 L3 審核，建議在文件末尾附上《審核意見.md》的總評判定（`PASS` / `PASS WITH CAVEATS` / `FAIL`）與審核日期，讓下游使用者知悉可信度佐證。
