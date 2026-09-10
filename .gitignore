@@ -1,13 +1,33 @@
 # Local data, intermediate outputs, and working files
 chronological_inventory.md
 process.md
-*最新拍板數據與時間序總整理.md
+*總整理*.md
 *.log
+
+# Raw documents & directories
 output/
 data/
+raw_data/
+temp/
+tmp/
+*.docx
+*.doc
+*.pdf
+*.xlsx
+*.xls
+*.csv
+*.pptx
+*.ppt
+
+# Python environment & packaging
 .venv/
 __pycache__/
+*.pyc
 *.egg-info/
 dist/
 build/
+
+# OS & Environment
 .DS_Store
+.env
+.env.*
