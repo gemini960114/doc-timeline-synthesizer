@@ -88,17 +88,34 @@ cd doc-timeline-synthesizer && uv sync && cd ..
 
 ### 方式 C：掛載為 AI Agent Skill
 
-本專案根目錄的 `SKILL.md` 符合 Agent 技能規範，可透過軟連結（Symlink）掛載至常用 Agent 工具：
+本專案根目錄的 `SKILL.md` 符合 Agent 技能規範，可掛載至常用 Agent 工具。
+
+#### 1. 專案層級掛載（Project-Level，推薦，僅在當前專案生效）：
+進入您的業務專案根目錄（Current Folder），建立專案專屬的技能目錄並軟連結：
 
 ```bash
+cd /path/to/my-project
+
+# 建立專案層級 skills 目錄（包含 .agents 規範）
+mkdir -p .agents/skills .claude/skills .codex/skills .gemini/skills
+
+# 軟連結 doc-timeline-synthesizer 至各 Agent 目錄
+ln -sfn /path/to/doc-timeline-synthesizer .agents/skills/doc-timeline-synthesizer
+ln -sfn /path/to/doc-timeline-synthesizer .claude/skills/doc-timeline-synthesizer
+ln -sfn /path/to/doc-timeline-synthesizer .codex/skills/doc-timeline-synthesizer
+ln -sfn /path/to/doc-timeline-synthesizer .gemini/skills/doc-timeline-synthesizer
+```
+
+#### 2. 全局層級掛載（Global，所有專案皆可使用）：
+```bash
 # Claude Code
-ln -sf /path/to/doc-timeline-synthesizer ~/.claude/skills/doc-timeline-synthesizer
+ln -sfn /path/to/doc-timeline-synthesizer ~/.claude/skills/doc-timeline-synthesizer
 
 # OpenAI Codex / CLI
-ln -sf /path/to/doc-timeline-synthesizer ~/.codex/skills/doc-timeline-synthesizer
+ln -sfn /path/to/doc-timeline-synthesizer ~/.codex/skills/doc-timeline-synthesizer
 
 # Google Antigravity / Gemini CLI
-ln -sf /path/to/doc-timeline-synthesizer ~/.gemini/config/skills/doc-timeline-synthesizer
+ln -sfn /path/to/doc-timeline-synthesizer ~/.gemini/config/skills/doc-timeline-synthesizer
 ```
 
 ---
