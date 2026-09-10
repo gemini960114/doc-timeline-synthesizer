@@ -33,6 +33,9 @@ description: Use when an agent needs to perform multi-document chronological ded
 > **工具與大腦分工**：
 > 內建腳本 `scripts/synthesize.py` 負責**文檔清單時序排序、品質健檢與指標片段初篩**；真正的高階語意去雜訊、跨文檔實體提煉與新舊數值覆寫裁決，是由 **LLM Agent** 依據本規範執行。
 
+> [!NOTE]
+> **圖片佔位符**：`docling-skill` 目前不會自動描述內嵌圖片內容，`source.md` 中的 `[[image:...]]` 只是佔位符。若語料庫含此類佔位符，建議先執行下方「步驟零」補強，避免圖片裡的關鍵數字在後續步驟中被完全忽略。
+
 ---
 
 ## 領域驅動分類與目錄隔離架構（Domain-Driven Segmentation）
@@ -73,7 +76,13 @@ output/ （各自獨立累積與蒸餾）
 4. **爭議與痛點（Concerns）**：時程是否落後、預算重疊質疑、資安疑慮、產業落地效益。
 5. **官方拍板對策（Official Actions）**：過渡期調度措施、法規鬆綁、試用成效與里程碑。
 
-### 3. 時間序衝突覆寫法則（Latest-Date Overwrite Rule）
+### 3. 同一文件內部一致性核查（Intra-Document Consistency Check）
+與下方「禁止跨時間戳拼接」不同，這是**同一份文件內部**的矛盾：敘述性文字（例如公文「案由」自由文字段落）與結構化欄位（表格、勾選框、圖片判讀內容）之間可能互相衝突。實務案例：16份立法院提案表中，有4份案由文字段落所載的基期科目金額與表頭勾選之科目、金額不符，其中1份（164對案）連凍結金額本身都與表頭差了20倍——經比對後發現，這些案由文字係誤植了另一件提案的範本內容（例如164對案的案由文字與087對案逐字相同）。
+- 遇到此類矛盾，**優先採信結構化欄位（表格、勾選框、圖片中的正式表頭數字）**，敘述文字若與其衝突，視為原始文件本身瑕疵。
+- **不可只採信一方就悄悄略過**，必須在Citation欄位明確揭露「文字與結構化欄位不一致、本報告採信何者、理由為何」。
+- 若懷疑敘述文字是誤植自其他案件的範本，可比對其餘案件是否有逐字相同的文字段落佐證此推測。
+
+### 4. 時間序衝突覆寫法則（Latest-Date Overwrite Rule）
 - **時間排序**：抓取檔名或內文中的年月日時間戳（如 `1150828` > `1150720` > `1150601`）。
 - **單一真相**：當同一指標出現不同數據時，**最新時間戳記的數值直接覆寫舊數據，作為唯一主事實（Latest Truth）**。
 - **出處標註（Provenance / Citation）**：每個關鍵數字（預算、時程、規格）均須在後方註記出處來源檔名及章節表號，便於人工抽查審計。
@@ -84,6 +93,22 @@ output/ （各自獨立累積與蒸餾）
 
 ## 標準執行步驟（Execution Steps）
 
+### 步驟零：圖片佔位符補強（選用，語料庫一次性前處理）
+`docling-skill` 目前預設**未啟用**圖片內容描述（`do_picture_description`），遇到內嵌圖片時，只會將圖片以 base64 存入 `source.evidence.json`，並在 `source.md` 留下穩定佔位符 `[[image:picture-p0-0]]`——這不代表圖片內容無法辨識，只是尚未有任何 Agent 去看過。若略過此步驟，圖片裡的資訊（尤其掃描公文、手寫簽核金額、圖表化的統計數字）會在後續蒸餾與稽核時完全消失於文字檢索範圍之外。
+
+1. 先用偵測腳本掃描該領域，取得「值不值得做」的判斷依據（風險等級、字元數、是否已處理），而不是憑感覺決定：
+   ```bash
+   python3 scripts/scan_image_placeholders.py --input-dir output/<domain>
+   ```
+2. **是否執行由使用者／Agent 依掃描結果決定**，不是強制動作：
+   - 對判斷「值得看」的檔案（risk_level 較高、或字元數偏少而圖片可能承載未被文字涵蓋的數字），從同目錄 `source.evidence.json` 的 `images[].base64` 還原圖檔，交由具備視覺能力的 Agent 直接讀圖並描述內容，**特別留意圖片中是否藏有文字正文未涵蓋的數字、表格、金額或簽核結果**，將描述寫入同目錄新增的 sidecar 檔案 `source.images.md`（格式：`## <picture_id>\n<描述文字>`）。
+   - 對判斷「不重要」的檔案（例如確認只是版頭 logo、簽章圖），執行 `python3 scripts/scan_image_placeholders.py --input-dir output/<domain> --mark-skip <資料夾名稱> --reason "..."` 記錄略過決定（寫入 `source.images.skip.json`），讓 L3 審核知道這是**刻意判斷過、不是遺漏**。
+3. **禁止直接修改 `source.md` 本體**——`source.md` 是 docling-skill（L1）的契約化產出，重跑 L1 會覆蓋手動或 Agent 補述的內容，且混雜自動解析與人工判讀文字，會使下游稽核（L3）無法區分兩者的可信度層級。
+4. 此步驟為一次性語料庫前處理，同一份來源文件不需每次蒸餾都重做。完成後，步驟一至五、以及下游 RAG 索引，均須將存在的 `source.images.md` 視為對應 `source.md` 的延伸內容一併讀取與引用。
+
+> [!NOTE]
+> 圖片不一定是無決策價值的雜訊。已知案例：立法院提案表常以整頁掃描圖呈現，凍結金額、科目名稱等關鍵數字可能只存在圖片裡、未被 OCR 進正文——若略過本步驟，步驟三蒸餾與步驟四回溯驗證都可能把這類數字誤判為「查無出處」。
+
 ### 步驟一：來源可信度分級檢查（Source Trust Gate）
 在讀取任何 `source.md` 內容之前，Agent 必須先檢查其同目錄下的 `source.manifest.json`：
 1. 讀取 `decision.status`、`decision.agent_ready`、`decision.risk_level` 三個欄位。若 `agent_ready: false` 或 `risk_level: "high"`（常見於 `reasons` 含 `page_quality_failed` 或 `high_ocr_noise` 的 PDF／OCR 來源），該文件視為**高風險來源**，不得直接當作可信引用依據。
@@ -91,6 +116,7 @@ output/ （各自獨立累積與蒸餾）
 3. 高風險來源中的表格數字（尤其合併儲存格常被拆散、欄位錯位，例如「小計」被拆成「小」「計」兩欄），**引用前須人工比對表格欄位是否對齊**，不可逕行信任自動解析結果。
 4. `risk_level: "medium"` 的來源仍可正常使用，但若 `warnings` 含 `replacement_characters`，應快速搜尋內文是否仍殘留替代字元（`U+FFFD`／`�`），確認實際受影響範圍。
 5. 凡引用自高風險來源的數字，於《總整理.md》的 Citation 欄位須額外標註「⚠ 來源標記高風險，已人工複核」或「⚠ 來源標記高風險，待複核」，讓下游使用者知悉可信度落差，不得以「已涵蓋重點」為由略過揭露。
+6. 若該來源目錄存在步驟零產出的 `source.images.md`，須將其內容視為 `source.md` 正文的延伸，一併納入實體萃取與 Citation 依據；出處標註格式為「來源檔名＋圖片描述（sidecar）」，讓稽核者知道該數字是透過圖片判讀取得，而非文字直接解析。
 
 ### 步驟二：呼叫預備健檢與時序排序腳本
 ```bash
@@ -117,6 +143,13 @@ Agent 讀取 `chronological_inventory.md` 與各關鍵文檔，依據本規範�
 ### 步驟五：交付獨立審核（Hand-off to L3 Audit）
 報告完成步驟四後，對於將送交決策層、立法院或任何對外用途的產出，**另起一個全新 Agent／Session**，掛載 `doc-timeline-auditor` 技能執行審核，取得《審核意見.md》。判定為 `FAIL` 者退回步驟三重新蒸餾；`PASS` 或 `PASS WITH CAVEATS` 者才可交付下游使用。內部草稿或低風險用途可視情況省略此步驟，但仍建議保留步驟四的自我抽查。
 
+### 步驟六：產出 RAG 合併文件（選用，交付下游前的最後一步）
+`source.md` 與步驟零產出的 `source.images.md` 是刻意分開存放的兩份檔案，但下游 RAG 系統通常希望「一個出處＝一份文件」，分開上傳會讓同一來源的正文與圖片描述被切成不相干的兩筆資料。交付下游前執行：
+```bash
+python3 scripts/build_rag_bundle.py --input-dir output/<domain>
+```
+此腳本將 `source.md` 與（若存在的）`source.images.md` 合併為 `source.rag.md`，不修改前兩份 canonical 檔案。**下游 RAG／NotebookLM 應索引 `source.rag.md`，而非直接索引 `source.md`。** `source.rag.md` 為可重新產生的衍生檔案，來源更新後重跑此腳本即可。
+
 ---
 
 ## 交付成果規格（Output Contract）
@@ -128,3 +161,6 @@ Agent 讀取 `chronological_inventory.md` 與各關鍵文檔，依據本規範�
 4. **肆、下游 RAG 與 NotebookLM 引用指引**
 
 > 若已執行步驟五的 L3 審核，建議在文件末尾附上《審核意見.md》的總評判定（`PASS` / `PASS WITH CAVEATS` / `FAIL`）與審核日期，讓下游使用者知悉可信度佐證。
+
+> [!NOTE]
+> 「肆、下游 RAG 與 NotebookLM 引用指引」章節應明確告知：原始語料庫的 RAG 索引對象是步驟六產出的 `source.rag.md`（若尚未執行步驟六，則為 `source.md`），而非直接混用 `source.md` 與 `source.images.md` 兩份分開的檔案。

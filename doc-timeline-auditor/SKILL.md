@@ -22,12 +22,15 @@ description: Use after doc-timeline-synthesizer produces a 《總整理.md》or�
 > [!IMPORTANT]
 > **執行方式**：務必以全新的 Agent 對話（例如另開一個 Claude Code session、或用 Agent 工具起一個全新 subagent）執行本技能，不可與產出《總整理.md》的同一個對話接續進行。審核者的 prompt 只應包含「待審報告路徑」與「原始語料庫路徑」，不應附上蒸餾 Agent 的推理紀錄或對話摘要。
 
+> [!NOTE]
+> **審核者本身不要再分身**：稽核 Agent 應以單一 Agent 循序完成五大維度查核，不要為了加速而自行再開子 subagent 分工查各章節。多份審核（例如各領域報告＋金字塔簡報）平行執行沒問題，但每一份審核本身維持單一 Agent，避免在共用額度/速率限制的環境下（尤其同一帳號有多個並行 session 時）過快觸發 rate limit 而中途失敗。
+
 ---
 
 ## 稽核輸入（Audit Inputs）
 
 1. **待審報告**：一份或多份《總整理.md》，或金字塔頂層的《全局決策戰略綜合簡報.md》。
-2. **原始語料庫**：報告所屬領域 `output/<domain>/*/source.md`、`source.manifest.json`、`source.evidence.json` 全集——**不是** `chronological_inventory.md` 的截斷片段。
+2. **原始語料庫**：報告所屬領域 `output/<domain>/*/source.md`、`source.manifest.json`、`source.evidence.json` 全集——**不是** `chronological_inventory.md` 的截斷片段。若來源資料夾內存在 `source.images.md`（圖片佔位符補強 sidecar，見 `doc-timeline-synthesizer` 步驟零），須將其視為該來源 `source.md` 的延伸內容，一併納入查證範圍。
 
 ---
 
@@ -37,6 +40,10 @@ description: Use after doc-timeline-synthesizer produces a 《總整理.md》or�
 對報告中**每一個** Citation 標籤，實際回到其宣稱的 `source.md` 用文字檢索確認：
 - 該數字（含單位）真的存在於該檔案中。
 - 若檢索不到，往其他領域的 `source.md` 反查，確認是否為「引用錯置」（數字是真的，但出處標錯檔名）。
+- 若在所有 `source.md` 全文中都查無出處，**先確認該來源資料夾是否含未處理的圖片佔位符**（可執行 `python3 scripts/scan_image_placeholders.py --input-dir output/<domain>` 一次看完整個領域的狀態）——該數字可能是藏在整頁掃描圖或圖表裡（例如立法院提案表的手寫簽核金額），文字正文完全沒有 OCR 到。依該資料夾的狀態分別處理：
+  - 已有 `source.images.md`：優先比對其內容是否支持報告中的數字。
+  - 已有 `source.images.skip.json`：代表蒸餾階段已明確判斷該圖片與決策數字無關並記錄在案，不構成「未揭露」缺失，可視為已處理，不需列為稽核發現。
+  - 兩者皆無：**不可僅憑文字檢索落空就直接判定「查無出處」**，須還原 `source.evidence.json` 的 `images[].base64` 親自檢視圖片內容再下判斷；若圖片證實是唯一出處卻未被記錄成 sidecar 或 skip 標記，應列為缺失（違反 doc-timeline-synthesizer 步驟零的補強或略過紀錄要求）。
 
 ### 2. 來源風險揭露（Source Risk Disclosure）
 對每一個被引用的來源檔案，讀取其 `source.manifest.json`：
@@ -45,14 +52,17 @@ description: Use after doc-timeline-synthesizer produces a 《總整理.md》or�
 
 ### 3. 跨時間戳拼接檢測（Anti-Splicing Check）
 找出報告中「多個計量單位共同描述同一指標」的敘述（例如「MW」與「PF／PB」成組出現、「千元」與「百分比」成組出現），逐一確認每個單位是否來自**同一份、同一時間戳**的來源文件。凡混用不同時間戳文件的不同單位者，列為缺失並指出正確的最新單一來源。
+> 注意與下方「文件內部一致性」的區別：這裡查的是**跨文件**的新舊拼接；同一份文件內部「敘述文字」與「表格/圖片表頭」互相矛盾（例如案由段落誤植另一案的範本文字），屬於引用可解性（Dimension 1）與 `doc-timeline-synthesizer` SKILL.md「核心處理原則3」的查核範疇，稽核時對照原文表格/圖片欄位逐一核對，不可只看敘述文字就判定「查有出處」。
 
 ### 4. 覆蓋度抽查（Coverage Sampling）
 針對報告引用的**大型**來源文件（例如字元數超過 5 萬字的綱要計畫書、歲出概況表），隨機抽查 2-3 個報告完全沒提到的段落或表格列，確認：
 - 是否存在與報告已收錄項目同等重要、但被漏掉的指標修正／爭議項目（例如同一份 A009 修正表裡的其他關鍵成果變更）。
+- **選擇性揭露檢查**：若報告對某一類爭議（例如「資安經費占比偏低」）只對報告中部分同類項目做出揭露，須主動檢查同類其他項目（同一份報告內、性質相同的其他計畫/科目）是否也存在相同問題卻被遺漏，不可因為「其他項目沒被提及」就假設「其他項目沒有這個問題」——這種遺漏比完全沒查到更隱蔽，因為報告看起來已經做過同類分析。
 - 藉此推估報告的實際覆蓋率，而非僅信任蒸餾 Agent 自陳「重點已涵蓋」。
 
 ### 5. 數值重算驗證（Arithmetic Re-derivation）
 對報告中出現的加總、佔比、成長率等衍生計算（例如「五大計畫合計 348.63 億」「資本門佔比 88.87%」），獨立重新算一次，確認與報告數字一致。
+> **金字塔匯總簡報須額外注意**：凡是直接沿用領域《總整理.md》的衍生計算（加總、百分比、成長率），即使領域報告「看起來已經算過」，仍須獨立重新算一次，不可因為下層報告自稱已複核就跳過——算術錯誤一旦發生在領域報告，最容易被金字塔簡報原樣複製擴散，而這正是本技能存在的核心理由（見文件開頭「為什麼需要獨立於蒸餾 Agent 之外」）。
 
 ---
 

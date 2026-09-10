@@ -188,6 +188,18 @@ my-knowledge-workspace/
 
 ## 🛠️ 端到端標準操作流程（Workflow）
 
+### 步驟零：圖片佔位符補強（選用，語料庫一次性前處理）
+
+`docling-skill` 目前預設**不會**自動描述內嵌圖片內容——遇到圖片只會在 `source.md` 留下 `[[image:picture-p0-0]]` 佔位符，圖片本身以 base64 存進同目錄的 `source.evidence.json`。立法院提案表、公文簽核頁常常整頁以掃描圖呈現，**關鍵凍結金額、科目名稱可能只存在圖片裡，完全沒被 OCR 進正文**——略過此步驟，後續蒸餾與審核用文字檢索都會查無出處。
+
+先跑偵測腳本，取得「值不值得做」的判斷依據（不是憑感覺決定）：
+
+```bash
+python3 scripts/scan_image_placeholders.py --input-dir output/01_財會預算
+```
+
+對判斷值得看的檔案，讓具備視覺能力的 Agent（如 Claude Code）直接讀圖描述，寫入同目錄的 `source.images.md`；對確認純屬版頭/簽章圖的檔案，執行 `--mark-skip` 記錄略過決定。**兩者都不可直接修改 `source.md` 本體**——它是 docling-skill（L1）的契約化產出，重跑 L1 會覆蓋任何手動或 Agent 補述的內容。完整操作範例與實測案例見 [`EXAMPLE.md`](EXAMPLE.md) 的「選用：圖片佔位符補強」小節。
+
 ### 步驟一：L1 物理轉換（使用 docling-skill）
 
 將原始文件依領域進行批次結構化轉換：
@@ -250,6 +262,19 @@ Agent 將依據 `SKILL.md` 規範，產出符合格式契約的 Single Source of
 > 「請依照 `doc-timeline-auditor` 技能規範，審核 `reports/01_財會預算_最新拍板總整理.md`。原始語料庫在 `output/01_財會預算/` 下。請不要假設報告內容正確，逐一回溯每個 Citation 到來源 `source.md`，並檢查對應的 `source.manifest.json` 風險分級是否已如實揭露。」
 
 Agent 會產出《審核意見.md》，總評為 `PASS` / `PASS WITH CAVEATS` / `FAIL` 三選一。**只有前兩者才可以交付下游使用**；`FAIL` 需退回步驟三重新蒸餾。
+
+### 步驟五：產出 RAG 合併文件（選用，交付下游前的最後一步）
+
+`source.md` 與步驟零產出的 `source.images.md` 是刻意分開存放的兩份檔案，但下游 RAG 系統通常希望「一個出處＝一份文件」。送進 RAG 之前，跑一次合併腳本，產出第三份檔案 `source.rag.md`（不影響前兩份 canonical 檔案，只是把兩者內容接在一起）：
+
+```bash
+python3 scripts/build_rag_bundle.py --input-dir output/01_財會預算
+```
+
+**RAG 系統實際要上傳／索引的檔案是 `output/<domain>/*/source.rag.md`，不是 `source.md`。** `source.rag.md` 是可重新產生的衍生檔案，`source.md` 或 `source.images.md` 任一份更新後，重跑此腳本再重新索引即可。
+
+> [!TIP]
+> **不想每次都逐步驟下指令？** 資料備妥或更新後，直接用自然語言告訴 Agent（例如「data/01_財會預算 新增了幾份文件，幫我跑一次更新」），Agent 會自行判斷需要執行步驟零～步驟六中的哪些步驟並依序完成，包含平行處理多領域蒸餾、逐份交付獨立審核、套用審核發現的修正。完整範例與實戰踩坑經驗（例如同一文件內部「敘述文字」與「表格/圖片」互相矛盾的案例、L3審核如何避免觸發 API 速率限制）見 [`EXAMPLE.md`](EXAMPLE.md) 「階段十：自然語言一鍵觸發」。
 
 ---
 
