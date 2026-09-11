@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "doc-timeline-synthesizer"
-version = "1.0.0"
-description = "Multi-document chronological deduplication, denoising, and knowledge synthesis skill on top of docling-skill."
+version = "1.1.0"
+description = "Scope-aware temporal and authority arbitration for provenance-backed multi-document synthesis."
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
@@ -13,8 +13,14 @@ authors = [
   { name = "CHAOCHUN CHUANG", email = "gemini960114@gmail.com" },
 ]
 dependencies = [
-  "docling-skill @ git+https://github.com/realraelrr/docling-skill.git@v2.0.0",
+  "docling-skill @ git+https://github.com/realraelrr/docling-skill.git@v1.2.1",
 ]
 
 [project.scripts]
 doc-timeline-synthesizer = "scripts.synthesize:main"
+
+[tool.setuptools]
+packages = ["scripts"]
+
+[tool.setuptools.exclude-package-data]
+scripts = ["batch_convert.py"]

@@ -19,7 +19,7 @@ def parse_timestamp(name: str) -> tuple[str, bool]:
     Returns:
         (parsed_date_str, is_valid)
     """
-    # 1. Matches 7-digit Taiwan date (e.g. 1150601, 1150720, 1150828)
+    # 1. Matches 7-digit Taiwan date (e.g. 1130101, 1130215, 1131231)
     m1 = re.search(r'(?<!\d)(11\d)(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])(?!\d)', name)
     if m1:
         return f"{m1.group(1)}{m1.group(2)}{m1.group(3)}", True
@@ -29,7 +29,7 @@ def parse_timestamp(name: str) -> tuple[str, bool]:
     if m2:
         return f"{m2.group(1)}{m2.group(2)}{m2.group(3)}", True
 
-    # 3. Matches dates with dot/slash/hyphen: 115.08.14, 115/06/01
+    # 3. Matches dates with dot/slash/hyphen: 113.02.15, 113/01/01
     m3 = re.search(r'(?<!\d)(11\d)[.\-/](0?[1-9]|1[0-2])[.\-/](0?[1-9]|[12]\d|3[01])(?!\d)', name)
     if m3:
         return f"{m3.group(1)}{int(m3.group(2)):02d}{int(m3.group(3)):02d}", True
@@ -143,7 +143,7 @@ def main():
         out.write(f"> **時間範圍**：{dated_items[0]['timestamp'] if dated_items else 'N/A'} 至 {dated_items[-1]['timestamp'] if dated_items else 'N/A'}\n\n")
         out.write("---\n\n")
 
-        out.write("## 壹、時序排序總表（由舊至新，後者覆寫前者）\n\n")
+        out.write("## 壹、時序排序總表（由舊至新；須先確認範圍與權威）\n\n")
         out.write("| 序號 | 時間戳 (Timestamp) | 文檔資料夾名稱 | 字元數 | Ingestion品質 | 關鍵指標初篩片段 |\n")
         out.write("| :---: | :---: | :--- | :---: | :---: | :--- |\n")
         
@@ -161,7 +161,7 @@ def main():
         out.write("\n---\n\n")
         out.write("## 參、LLM 認知蒸餾指示（Instructions for Agent Synthesis）\n")
         out.write("請 Agent 依據此時序清單與 `SKILL.md` 規範執行：\n")
-        out.write("1. **嚴格時間序覆寫**：針對同一計畫指標，後發布時間點（較大序號）數值直接覆寫舊時間點數值，定案為 Latest Truth。\n")
+        out.write("1. **範圍感知仲裁**：只有在實體、屬性、目標期間、範圍、單位與欄位語意一致時，才將不同數值視為同一事實的版本候選；在候選集合內綜合時間戳、文件狀態、簽核權限與出處鏈判定目前有效值。範圍不同或證據不足時保留衝突，不強制覆寫。\n")
         out.write("2. **出處標註**：每個關鍵數字（預算、算力、時程）必須標註其來自之具體資料夾及章節表號，嚴禁脫離證據生成。\n")
         out.write("3. **去除行政贅詞**：忽略公文表頭、簽核代碼、問候語與樣板前言。\n")
 

@@ -35,3 +35,15 @@ build/
 .claude/
 .codex/
 .gemini/
+
+# Private research and manuscript workspace
+paper/
+reports/
+AUTHOR.txt
+Reference.txt
+
+# Local research-tool metadata
+skills-lock.json
+
+# Corpus-specific local orchestration
+scripts/batch_convert.py

@@ -45,7 +45,7 @@ def main():
     parser.add_argument(
         "--input-dir",
         default="./output",
-        help="Domain output directory to process, e.g. output/01_財會預算 (default: ./output)",
+        help="Domain output directory to process, e.g. output/example_domain (default: ./output)",
     )
     args = parser.parse_args()
 

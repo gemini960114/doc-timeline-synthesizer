@@ -99,7 +99,7 @@ def main():
     parser.add_argument(
         "--input-dir",
         default="./output",
-        help="Domain output directory to scan, e.g. output/01_財會預算 (default: ./output)",
+        help="Domain output directory to scan, e.g. output/example_domain (default: ./output)",
     )
     parser.add_argument(
         "--mark-skip",
@@ -109,7 +109,7 @@ def main():
     parser.add_argument(
         "--reason",
         default="",
-        help="Reason to record with --mark-skip, e.g. '僅版頭/簽章圖，無決策數字'",
+        help="Reason to record with --mark-skip, e.g. 'header or decorative image; no decision-relevant content'",
     )
     args = parser.parse_args()
 

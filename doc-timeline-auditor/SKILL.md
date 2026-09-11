@@ -6,7 +6,7 @@ description: Use after doc-timeline-synthesizer produces a 《總整理.md》or�
 # doc-timeline-auditor
 
 `doc-timeline-auditor` 是 `doc-timeline-synthesizer`（L2 Synthesis Layer）的**獨立第三層審核（L3 Audit Layer）**。
-它不產生新的總整理內容，只對**已產出**的《總整理.md》或《全局決策戰略綜合簡報.md》做逆向查核，判定它是否真的可以交給首長／立法院當作決策依據。
+它不產生新的總整理內容，只對**已產出**的《總整理.md》或《全局決策戰略綜合簡報.md》做逆向查核，判定它是否可作為對外發布或高風險決策依據。
 
 ---
 
@@ -18,6 +18,9 @@ description: Use after doc-timeline-synthesizer produces a 《總整理.md》or�
 - 直接引用被 `docling-skill` 自己標記為 `agent_ready: false` / `risk_level: high` 的來源，卻未在報告中揭露風險。
 
 這些錯誤的共同特徵是：**產生錯誤的那個推理路徑，也正是自我檢查時會被重複套用的路徑**。因此審核必須由一個**沒有讀過蒸餾過程、只看得到「成品報告」與「原始語料庫」的全新 Agent / Session** 來執行，才能真正扮演對抗性的第二視角。
+
+> [!NOTE]
+> **獨立性邊界**：此處的分離只表示審核 context 不取得產出者的對話歷史或推理軌跡；不代表底層模型家族不同。若風險與資源允許，可另用不同模型家族進行補充審核，以降低共同盲點。
 
 > [!IMPORTANT]
 > **執行方式**：務必以全新的 Agent 對話（例如另開一個 Claude Code session、或用 Agent 工具起一個全新 subagent）執行本技能，不可與產出《總整理.md》的同一個對話接續進行。審核者的 prompt 只應包含「待審報告路徑」與「原始語料庫路徑」，不應附上蒸餾 Agent 的推理紀錄或對話摘要。
@@ -40,7 +43,7 @@ description: Use after doc-timeline-synthesizer produces a 《總整理.md》or�
 對報告中**每一個** Citation 標籤，實際回到其宣稱的 `source.md` 用文字檢索確認：
 - 該數字（含單位）真的存在於該檔案中。
 - 若檢索不到，往其他領域的 `source.md` 反查，確認是否為「引用錯置」（數字是真的，但出處標錯檔名）。
-- 若在所有 `source.md` 全文中都查無出處，**先確認該來源資料夾是否含未處理的圖片佔位符**（可執行 `python3 scripts/scan_image_placeholders.py --input-dir output/<domain>` 一次看完整個領域的狀態）——該數字可能是藏在整頁掃描圖或圖表裡（例如立法院提案表的手寫簽核金額），文字正文完全沒有 OCR 到。依該資料夾的狀態分別處理：
+- 若在所有 `source.md` 全文中都查無出處，**先確認該來源資料夾是否含未處理的圖片佔位符**（可執行 `python3 scripts/scan_image_placeholders.py --input-dir output/<domain>` 一次看完整個領域的狀態）——該數字可能是藏在整頁掃描圖或圖表裡（例如掃描表單中的手寫核定數值），文字正文完全沒有 OCR 到。依該資料夾的狀態分別處理：
   - 已有 `source.images.md`：優先比對其內容是否支持報告中的數字。
   - 已有 `source.images.skip.json`：代表蒸餾階段已明確判斷該圖片與決策數字無關並記錄在案，不構成「未揭露」缺失，可視為已處理，不需列為稽核發現。
   - 兩者皆無：**不可僅憑文字檢索落空就直接判定「查無出處」**，須還原 `source.evidence.json` 的 `images[].base64` 親自檢視圖片內容再下判斷；若圖片證實是唯一出處卻未被記錄成 sidecar 或 skip 標記，應列為缺失（違反 doc-timeline-synthesizer 步驟零的補強或略過紀錄要求）。
@@ -55,7 +58,7 @@ description: Use after doc-timeline-synthesizer produces a 《總整理.md》or�
 > 注意與下方「文件內部一致性」的區別：這裡查的是**跨文件**的新舊拼接；同一份文件內部「敘述文字」與「表格/圖片表頭」互相矛盾（例如案由段落誤植另一案的範本文字），屬於引用可解性（Dimension 1）與 `doc-timeline-synthesizer` SKILL.md「核心處理原則3」的查核範疇，稽核時對照原文表格/圖片欄位逐一核對，不可只看敘述文字就判定「查有出處」。
 
 ### 4. 覆蓋度抽查（Coverage Sampling）
-針對報告引用的**大型**來源文件（例如字元數超過 5 萬字的綱要計畫書、歲出概況表），隨機抽查 2-3 個報告完全沒提到的段落或表格列，確認：
+針對報告引用的**大型**來源文件（例如字元數超過 5 萬字的大型計畫書、技術文件或彙整表），隨機抽查 2-3 個報告完全沒提到的段落或表格列，確認：
 - 是否存在與報告已收錄項目同等重要、但被漏掉的指標修正／爭議項目（例如同一份 A009 修正表裡的其他關鍵成果變更）。
 - **選擇性揭露檢查**：若報告對某一類爭議（例如「資安經費占比偏低」）只對報告中部分同類項目做出揭露，須主動檢查同類其他項目（同一份報告內、性質相同的其他計畫/科目）是否也存在相同問題卻被遺漏，不可因為「其他項目沒被提及」就假設「其他項目沒有這個問題」——這種遺漏比完全沒查到更隱蔽，因為報告看起來已經做過同類分析。
 - 藉此推估報告的實際覆蓋率，而非僅信任蒸餾 Agent 自陳「重點已涵蓋」。
