@@ -98,7 +98,28 @@ Suggested prompt:
 
 Index source.rag.md rather than source.md when image sidecars are present.
 
-## 8. Release check
+## 8. Ingest into Hierarchical Dual-Store RAG (Synthetic example)
+
+To balance granular document context with audited consensus authority, maintain
+two distinct vector or hybrid collections:
+
+1. **`raw_corpus` collection**: Ingest chunked `source.rag.md` files from `output/`.
+2. **`ssot_reports` collection**: Ingest chunked domain reports from `reports/`.
+
+When querying:
+- Query both collections simultaneously (e.g., retrieve Top-5 chunks from `raw_corpus`
+  and Top-5 chunks from `ssot_reports`).
+- Use a priority arbitration system prompt:
+  > "You are answering questions using two knowledge sources: [SSOT_REPORTS]
+  > (audited, scope-verified domain summaries) and [RAW_CORPUS] (detailed source
+  > documents). If any numerical, factual, or temporal conflict exists between
+  > them, prioritize the values in [SSOT_REPORTS] as authoritative, while citing
+  > relevant historical progression from [RAW_CORPUS]."
+
+This prevents superseded drafts in the raw corpus from misleading the generator
+while preserving rich circumstantial evidence.
+
+## 9. Release check
 
 Before sharing any output:
 
@@ -106,4 +127,4 @@ Before sharing any output:
 - remove identifiers and restricted content;
 - obtain human verification of consequential values;
 - inspect the exact files staged for Git;
-- keep raw documents and generated reports outside the public repository.
+- keep raw documents, evaluation datasets, vector databases, and generated reports outside the public repository.

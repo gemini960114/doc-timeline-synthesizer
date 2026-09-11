@@ -7,8 +7,8 @@ authors:
     given-names: "Chao-Chun"
 repository-code: "https://github.com/gemini960114/doc-timeline-synthesizer"
 url: "https://github.com/gemini960114/doc-timeline-synthesizer"
-version: 1.1.0
-date-released: 2026-09-11
+version: 1.2.0
+date-released: 2026-09-12
 license: MIT
 keywords:
   - document synthesis

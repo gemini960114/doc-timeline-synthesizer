@@ -2,6 +2,14 @@
 
 All notable public changes are documented here.
 
+## 1.2.0 — 2026-09-12
+
+- Added architecture guidance for Hierarchical Dual-Store RAG (Raw Corpus + SSoT Reports) with priority arbitration prompting.
+- Documented quantitative benchmark results demonstrating significant accuracy gains (85.0% vs. 39.0% Naive Dense / 46.0% Hybrid Rerank) and an 83.3% reduction in context prompt overhead.
+- Added synthetic walkthrough for dual-store ingestion and priority arbitration retrieval in EXAMPLE.md and EXAMPLE.zh-TW.md.
+- Explicitly documented the security boundary for the evaluation suite (excluding live API keys, vector DB binaries, internal prompt logs, and un-anonymized benchmark datasets in compliance with ISS-06).
+- Sanitized public configuration examples (.env.example).
+
 ## 1.1.0 — 2026-09-11
 
 - Replaced unconditional latest-date overwrite guidance with scope-aware
