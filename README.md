@@ -152,7 +152,7 @@ A secondary post-hoc adjudication of the 15 automated non-matching queries under
 **Key Diagnostic Takeaways:**
 - **Primary Metric:** The reported **85.0%** is retained as the formal, prespecified automated exact-match accuracy for strict cross-system statistical comparison.
 - **Substantive Accuracy:** Under secondary post-hoc adjudication, **98/100 (98.0%)** of responses contained the intended factual information without factual degradation.
-- **Clarification on Automated Trap Flags ($STER = 12.0\%$):** Detailed inspection confirmed that all 12 automated trap flags in Condition 2 were detector false alarms: 4 stemmed from substring prefix collisions on project identifiers (`CP11501-00`), while 8 occurred because the model explicitly cited superseded figures to contrast, reject, or contextualize revision history while affirming the correct ratified figure. Substantively, zero responses adopted superseded drafts.
+- **Clarification on Automated Trap Flags ($STER = 12.0\%$) & Conflict Resolution Rate ($CRR = 73.0\%$):** Because $CRR$ is mechanically defined as $Acc \land \neg Trap$ ($85.0\% - 12.0\% = 73.0\%$), the automated CRR of 73.0% was directly reduced by the 12 false-positive trap flags. Detailed inspection confirmed that all 12 flags were detector false alarms: 4 stemmed from substring prefix collisions on project identifiers (`CP11501-00`), while 8 occurred because the model explicitly cited superseded figures to contrast, reject, or contextualize revision history while affirming the correct ratified figure. Post-hoc adjudication found no substantive superseded-draft adoption; therefore, both STER and CRR serve as conservative automated detector-based baselines rather than substantive resolution failures.
 
 ## Security and data boundary
 
