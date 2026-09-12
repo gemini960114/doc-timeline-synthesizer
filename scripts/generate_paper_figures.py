@@ -3,6 +3,7 @@
 Generate publication-grade vector PDF figures for the manuscript:
 Figure 1: End-to-end multi-document knowledge arbitration and governance workflow
 Figure 2: Hierarchical Dual-Store RAG architecture with priority authority arbitration
+Figure 3: Accuracy by question category (Condition 1 vs Condition 2)
 """
 
 import os
@@ -15,7 +16,7 @@ def setup_matplotlib():
     plt.rcParams['axes.edgecolor'] = '#CCCCCC'
     plt.rcParams['axes.linewidth'] = 0.8
 
-def draw_badge(ax, x, y, text, color='#2563EB', text_color='white', fontsize=7.5, pad=0.3):
+def draw_badge(ax, x, y, text, color='#1E293B', text_color='white', fontsize=7.2, pad=0.3):
     bbox_props = dict(boxstyle=f"round,pad={pad}", fc=color, ec="none", lw=0)
     ax.text(x, y, text, ha='center', va='center', fontsize=fontsize, 
             fontweight='bold', color=text_color, bbox=bbox_props)
@@ -23,37 +24,37 @@ def draw_badge(ax, x, y, text, color='#2563EB', text_color='white', fontsize=7.5
 def generate_figure_1(output_paths):
     """
     Figure 1: End-to-End Multi-Document Knowledge Arbitration and Governance Workflow
-    Dimensions: 15.5 x 6.5 inches (Publication Full-Width)
+    A structured, academic four-stage modular block diagram.
     """
-    fig, ax = plt.subplots(figsize=(15.5, 6.6), dpi=300)
+    fig, ax = plt.subplots(figsize=(15.8, 6.8), dpi=300)
     ax.set_xlim(0, 100)
     ax.set_ylim(0, 100)
     ax.axis('off')
 
-    # Main Canvas Background
+    # Canvas Background
     bg = FancyBboxPatch((0.5, 0.5), 99, 99, boxstyle="round,pad=0.2",
                         facecolor="#FFFFFF", edgecolor="#CBD5E1", linewidth=1.2)
     ax.add_patch(bg)
 
-    # Header Ribbon
-    header_ribbon = FancyBboxPatch((1.5, 91.5), 97, 7, boxstyle="round,pad=0.2",
-                                   facecolor="#0F172A", edgecolor="none")
-    ax.add_patch(header_ribbon)
-    ax.text(50, 95.8, "MULTI-DOCUMENT KNOWLEDGE ARBITRATION & VERIFICATION PIPELINE",
-            ha='center', va='center', fontsize=11, fontweight='bold', color='#38BDF8')
-    ax.text(50, 93, "Separating Deterministic Ingestion (L1), Multimodal Enrichment (Step 0), Semantic Distillation (L2), and Adversarial Review (L3)",
+    # Top Ribbon Header
+    head_ribbon = FancyBboxPatch((1.5, 92), 97, 6.8, boxstyle="round,pad=0.2",
+                                 facecolor="#0F172A", edgecolor="none")
+    ax.add_patch(head_ribbon)
+    ax.text(50, 96.2, "MULTI-DOCUMENT KNOWLEDGE ARBITRATION & GOVERNANCE PIPELINE",
+            ha='center', va='center', fontsize=11.2, fontweight='bold', color='#38BDF8')
+    ax.text(50, 93.6, "Separating Ingestion (L1), Multimodal Sidecar Enrichment (Step 0), Scope-Aware SSoT Distillation (L2), and Fresh-Session Review (L3)",
             ha='center', va='center', fontsize=7.8, color='#E2E8F0')
 
-    # Four Stage Columns
+    # 4 Main Columns
     stages = [
         {
             "id": "L1",
             "title": "Layer 1: Physical Ingestion",
-            "tool": "docling-skill",
+            "module": "docling-skill",
             "badge": "CONTRACTUAL REPRODUCIBILITY",
             "color": "#1D4ED8",
             "bg": "#F8FAFC",
-            "border": "#3B82F6",
+            "border": "#2563EB",
             "x": 2, "w": 22.5,
             "items": [
                 {
@@ -91,11 +92,11 @@ def generate_figure_1(output_paths):
         {
             "id": "STEP0",
             "title": "Step Zero: Vision Enrichment",
-            "tool": "scan_image_placeholders.py",
+            "module": "scan_image_placeholders.py",
             "badge": "MULTIMODAL SIDECAR LAYER",
-            "color": "#D97706",
+            "color": "#B45309",
             "bg": "#F8FAFC",
-            "border": "#F59E0B",
+            "border": "#D97706",
             "x": 26.5, "w": 22.5,
             "items": [
                 {
@@ -119,8 +120,8 @@ def generate_figure_1(output_paths):
                     ]
                 },
                 {
-                    "tag": "GROUND TRUTH DISCOVERY",
-                    "title": "20x Discrepancy Caught",
+                    "tag": "CRITICAL DISCOVERY",
+                    "title": "20x Monetary Gap Surfaced",
                     "lines": [
                         "• Image reveals NT$20M frozen,",
                         "  versus NT$1M narrative text!",
@@ -133,11 +134,11 @@ def generate_figure_1(output_paths):
         {
             "id": "L2",
             "title": "Layer 2: SSoT Distillation",
-            "tool": "doc-timeline-synthesizer",
+            "module": "doc-timeline-synthesizer",
             "badge": "SCOPE-AWARE ARBITRATION",
             "color": "#047857",
             "bg": "#F8FAFC",
-            "border": "#10B981",
+            "border": "#059669",
             "x": 51, "w": 22.5,
             "items": [
                 {
@@ -156,7 +157,7 @@ def generate_figure_1(output_paths):
                     "lines": [
                         "• Align entity, period, and scope",
                         "• Compare only comparable claims",
-                        "• Formal executive decrees outrank",
+                        "• Ratified decrees outrank",
                         "  preliminary working drafts"
                     ]
                 },
@@ -175,11 +176,11 @@ def generate_figure_1(output_paths):
         {
             "id": "L3",
             "title": "Layer 3: Fresh-Session Review",
-            "tool": "doc-timeline-auditor",
+            "module": "doc-timeline-auditor",
             "badge": "ADVERSARIAL OVERSIGHT",
             "color": "#B91C1C",
             "bg": "#F8FAFC",
-            "border": "#EF4444",
+            "border": "#DC2626",
             "x": 75.5, "w": 22.5,
             "items": [
                 {
@@ -204,7 +205,7 @@ def generate_figure_1(output_paths):
                     ]
                 },
                 {
-                    "tag": "KEY ANOMALY DETECTED",
+                    "tag": "VERIFICATION BOTTLENECK",
                     "title": "Arithmetic Error Corrected",
                     "lines": [
                         "• Caught 37.7% -> 41.8% error",
@@ -219,33 +220,38 @@ def generate_figure_1(output_paths):
 
     for st in stages:
         # Outer Card
-        card = FancyBboxPatch((st["x"], 10), st["w"], 79.5, boxstyle="round,pad=0.3",
+        card = FancyBboxPatch((st["x"], 10.5), st["w"], 79.5, boxstyle="round,pad=0.3",
                               facecolor=st["bg"], edgecolor=st["border"], linewidth=1.4)
         ax.add_patch(card)
 
         # Header Pill
-        head = FancyBboxPatch((st["x"], 82), st["w"], 7.5, boxstyle="round,pad=0.2",
+        head = FancyBboxPatch((st["x"], 82.5), st["w"], 7.5, boxstyle="round,pad=0.2",
                               facecolor=st["color"], edgecolor="none")
         ax.add_patch(head)
-        ax.text(st["x"] + st["w"]/2, 86.8, st["title"], ha='center', va='center',
+        ax.text(st["x"] + st["w"]/2, 87.2, st["title"], ha='center', va='center',
                 fontsize=8.8, fontweight='bold', color='white')
-        ax.text(st["x"] + st["w"]/2, 83.5, f"Module: {st['tool']}", ha='center', va='center',
+        ax.text(st["x"] + st["w"]/2, 84.0, f"Module: {st['module']}", ha='center', va='center',
                 fontsize=6.8, color='#F1F5F9', fontfamily='monospace')
 
         # Sub-badge below header
-        draw_badge(ax, st["x"] + st["w"]/2, 79.5, st["badge"], color=st["color"],
+        draw_badge(ax, st["x"] + st["w"]/2, 80.0, st["badge"], color=st["color"],
                    text_color='white', fontsize=6.2, pad=0.25)
 
         # 3 Item Boxes per column
-        box_y_starts = [76, 54, 32]
+        box_y_starts = [76.5, 54.5, 32.5]
         for idx, it in enumerate(st["items"]):
             by = box_y_starts[idx]
             bw = st["w"] - 1.8
-            bh = 20
+            bh = 20.2
             
-            # Item container
+            # Special highlighting for the two major empirical discoveries
+            is_callout = ("20x" in it["title"]) or ("Arithmetic" in it["title"])
+            box_fc = "#FFFDF5" if "20x" in it["title"] else ("#FFF5F5" if "Arithmetic" in it["title"] else "white")
+            box_lw = 1.2 if is_callout else 0.7
+            box_ls = "--" if is_callout else "-"
+
             it_box = FancyBboxPatch((st["x"] + 0.9, by - bh), bw, bh, boxstyle="round,pad=0.2",
-                                    facecolor="white", edgecolor=st["border"], linewidth=0.7)
+                                    facecolor=box_fc, edgecolor=st["border"], linewidth=box_lw, linestyle=box_ls)
             ax.add_patch(it_box)
 
             # Left accent bar
@@ -253,12 +259,12 @@ def generate_figure_1(output_paths):
                                  facecolor=st["color"], edgecolor="none")
             ax.add_patch(bar)
 
-            # Tag pill
+            # Tag
             ax.text(st["x"] + 2.8, by - 2.8, it["tag"], fontsize=5.8, fontweight='bold',
                     color=st["color"])
             
             # Title
-            ax.text(st["x"] + 2.8, by - 6.2, it["title"], fontsize=7.6, fontweight='bold',
+            ax.text(st["x"] + 2.8, by - 6.2, it["title"], fontsize=7.5, fontweight='bold',
                     color='#0F172A')
 
             # Bullet lines
@@ -270,8 +276,8 @@ def generate_figure_1(output_paths):
     # Flow Arrows connecting the 4 stages
     arrows = [
         (24.6, 50, 26.4, 50, "#2563EB", "source.md\nplaceholders"),
-        (49.1, 50, 50.9, 50, "#D97706", "source.images.md\nsidecars"),
-        (73.6, 50, 75.4, 50, "#059669", "Candidate SSoT\nDomain Reports")
+        (49.1, 50, 50.9, 50, "#B45309", "source.images.md\nsidecars"),
+        (73.6, 50, 75.4, 50, "#047857", "Candidate SSoT\nDomain Reports")
     ]
     for x1, y1, x2, y2, color, label in arrows:
         arr = FancyArrowPatch((x1, y1), (x2, y2), arrowstyle="-|>", mutation_scale=12,
@@ -282,19 +288,19 @@ def generate_figure_1(output_paths):
                 bbox=dict(boxstyle="round,pad=0.15", fc="#FFFFFF", ec=color, lw=0.6))
 
     # Bottom Banner: Downstream Integration
-    bot_banner = FancyBboxPatch((12, 1.8), 76, 6.2, boxstyle="round,pad=0.3",
+    bot_banner = FancyBboxPatch((12, 1.8), 76, 6.5, boxstyle="round,pad=0.3",
                                 facecolor="#0F172A", edgecolor="#38BDF8", linewidth=1.2)
     ax.add_patch(bot_banner)
-    ax.text(50, 5.8, "DOWNSTREAM APPLICATION: AUDITED SINGLE SOURCE OF TRUTH (SSoT)",
+    ax.text(50, 6.0, "DOWNSTREAM APPLICATION: AUDITED SINGLE SOURCE OF TRUTH (SSoT)",
             ha='center', va='center', fontsize=8.5, fontweight='bold', color='#38BDF8')
     ax.text(50, 3.4, "Indexed directly into Store 1 of Hierarchical Dual-Store RAG | Powers Verified Decision-Grade Question Answering",
             ha='center', va='center', fontsize=7.2, color='#E2E8F0')
 
-    # Downward arrow from L2/L3 to Bottom Banner
-    arr_down = FancyArrowPatch((63.2, 10), (63.2, 8.2), arrowstyle="-|>", mutation_scale=10,
-                               color="#059669", linewidth=1.8)
+    # Downward arrows from L2/L3 to Bottom Banner
+    arr_down = FancyArrowPatch((63.2, 10.5), (63.2, 8.4), arrowstyle="-|>", mutation_scale=10,
+                               color="#047857", linewidth=1.8)
     ax.add_patch(arr_down)
-    arr_down3 = FancyArrowPatch((86.7, 10), (86.7, 8.2), arrowstyle="-|>", mutation_scale=10,
+    arr_down3 = FancyArrowPatch((86.7, 10.5), (86.7, 8.4), arrowstyle="-|>", mutation_scale=10,
                                 color="#B91C1C", linewidth=1.8)
     ax.add_patch(arr_down3)
 
@@ -308,29 +314,30 @@ def generate_figure_1(output_paths):
 def generate_figure_2(output_paths):
     """
     Figure 2: Hierarchical Dual-Store RAG Architecture with Priority Authority Arbitration
-    Dimensions: 15.5 x 7.2 inches (Publication Full-Width)
+    Fixes misleading router: Uses Parallel Dual Dispatch (query sent to Store 1 and Store 2 simultaneously).
+    Restores the key empirical takeaway dashboard.
     """
-    fig, ax = plt.subplots(figsize=(15.5, 7.2), dpi=300)
+    fig, ax = plt.subplots(figsize=(15.8, 7.4), dpi=300)
     ax.set_xlim(0, 100)
     ax.set_ylim(0, 100)
     ax.axis('off')
 
-    # Main Canvas Background
+    # Canvas Background
     bg = FancyBboxPatch((0.5, 0.5), 99, 99, boxstyle="round,pad=0.2",
                         facecolor="#FFFFFF", edgecolor="#CBD5E1", linewidth=1.2)
     ax.add_patch(bg)
 
-    # Header Ribbon
-    header_ribbon = FancyBboxPatch((1.5, 92.5), 97, 6.5, boxstyle="round,pad=0.2",
-                                   facecolor="#0F172A", edgecolor="none")
-    ax.add_patch(header_ribbon)
-    ax.text(50, 96.5, "HIERARCHICAL DUAL-STORE RAG ARCHITECTURE & PRIORITY ARBITRATION",
-            ha='center', va='center', fontsize=11, fontweight='bold', color='#38BDF8')
-    ax.text(50, 94, "Segregated Vector Collections (SSoT vs. Raw) + Priority Prompting for High-Accuracy, Low-Token Decision Answering",
+    # Top Ribbon Header
+    head_ribbon = FancyBboxPatch((1.5, 92.5), 97, 6.5, boxstyle="round,pad=0.2",
+                                 facecolor="#0F172A", edgecolor="none")
+    ax.add_patch(head_ribbon)
+    ax.text(50, 96.6, "HIERARCHICAL DUAL-STORE RAG ARCHITECTURE & PRIORITY ARBITRATION",
+            ha='center', va='center', fontsize=11.2, fontweight='bold', color='#38BDF8')
+    ax.text(50, 94.0, "Parallel Dual-Store Indexing (SSoT vs. Raw) + Rule-Based Priority Arbitration achieving 85.0% Accuracy & 83.3% Token Reduction",
             ha='center', va='center', fontsize=7.8, color='#E2E8F0')
 
-    # Column 1: User Query / Decision Inquiry (x: 2 to 18)
-    q_box = FancyBboxPatch((2, 45), 16.5, 45, boxstyle="round,pad=0.3",
+    # Column 1: User Decision Inquiry (x: 2 to 18.5)
+    q_box = FancyBboxPatch((2, 42), 16.5, 48, boxstyle="round,pad=0.3",
                            facecolor="#F8FAFC", edgecolor="#2563EB", linewidth=1.3)
     ax.add_patch(q_box)
     
@@ -344,19 +351,23 @@ def generate_figure_2(output_paths):
     ax.text(3.2, 66, "\"What is the ratified 2026\nAI computing capacity and\nallocated budget for the\nSouthern Taiwan Data Center?\"",
             fontsize=6.5, fontstyle='italic', color="#334155", linespacing=1.25)
     
-    ax.text(3.2, 58, "Adversarial Trap Modes:", fontsize=7, fontweight='bold', color="#DC2626")
-    ax.text(3.2, 48, "• Superseded draft figures\n• Intra-table misalignments\n• Non-summable MW scopes\n• Direct factoid baselines",
+    ax.text(3.2, 57, "Adversarial Trap Modes:", fontsize=7, fontweight='bold', color="#DC2626")
+    ax.text(3.2, 47, "• Superseded draft figures\n• Intra-table misalignments\n• Non-summable MW scopes\n• Direct factoid baselines",
             fontsize=6.2, color="#475569", linespacing=1.25)
 
-    # Column 2: Dual Vector Stores (x: 21 to 45)
-    stores_box = FancyBboxPatch((20.5, 42), 24.5, 48, boxstyle="round,pad=0.3",
+    # Parallel Dispatch label
+    ax.text(19.8, 66, "Parallel\nDispatch", ha='center', va='center', fontsize=6.2,
+            fontweight='bold', color="#1D4ED8", linespacing=1.1)
+
+    # Column 2: Dual ChromaDB Stores (x: 21 to 44.5)
+    stores_box = FancyBboxPatch((21, 42), 23.5, 48, boxstyle="round,pad=0.3",
                                 facecolor="#F8FAFC", edgecolor="#64748B", linewidth=1.2, linestyle="--")
     ax.add_patch(stores_box)
-    ax.text(32.75, 87.5, "Dual ChromaDB Collections", ha='center', va='center',
+    ax.text(32.75, 87.5, "Segregated Stores (ChromaDB)", ha='center', va='center',
             fontsize=8.5, fontweight='bold', color="#0F172A")
 
     # Store 1 (SSoT)
-    s1 = FancyBboxPatch((21.8, 66), 21.9, 19, boxstyle="round,pad=0.25",
+    s1 = FancyBboxPatch((22, 66), 21.5, 19, boxstyle="round,pad=0.25",
                         facecolor="#ECFDF5", edgecolor="#059669", linewidth=1.3)
     ax.add_patch(s1)
     ax.text(32.75, 82.5, "Store 1: SSoT Reports Index", ha='center', va='center',
@@ -374,7 +385,7 @@ def generate_figure_2(output_paths):
         sy -= 2.2
 
     # Store 2 (Raw)
-    s2 = FancyBboxPatch((21.8, 44), 21.9, 20, boxstyle="round,pad=0.25",
+    s2 = FancyBboxPatch((22, 44), 21.5, 20, boxstyle="round,pad=0.25",
                         facecolor="#FFFBEB", edgecolor="#D97706", linewidth=1.3)
     ax.add_patch(s2)
     ax.text(32.75, 61, "Store 2: Raw Corpus Index", ha='center', va='center',
@@ -392,34 +403,34 @@ def generate_figure_2(output_paths):
         sy2 -= 2.2
 
     # Column 3: Parallel Hybrid Retrieval (x: 47 to 69)
-    ret_box = FancyBboxPatch((47.5, 42), 21.5, 48, boxstyle="round,pad=0.3",
+    ret_box = FancyBboxPatch((47, 42), 22, 48, boxstyle="round,pad=0.3",
                              facecolor="#F8FAFC", edgecolor="#475569", linewidth=1.2)
     ax.add_patch(ret_box)
-    ax.text(58.25, 87.5, "Parallel Hybrid Retrieval", ha='center', va='center',
+    ax.text(58, 87.5, "Parallel Hybrid Retrieval Engine", ha='center', va='center',
             fontsize=8.5, fontweight='bold', color="#0F172A")
 
     # Dense + Sparse
-    r1 = FancyBboxPatch((48.8, 72), 18.9, 13, boxstyle="round,pad=0.2",
+    r1 = FancyBboxPatch((48.2, 72), 19.6, 13, boxstyle="round,pad=0.2",
                         facecolor="white", edgecolor="#3B82F6", linewidth=0.8)
     ax.add_patch(r1)
-    ax.text(49.8, 81.5, "Hybrid Search", fontsize=7.4, fontweight='bold', color="#1D4ED8")
-    ax.text(49.8, 77, "• Dense: bge-m3 embeddings\n• Sparse: BM25 lexical rank\n• Reciprocal Rank Fusion (k=60)",
+    ax.text(49.2, 81.5, "Hybrid Search", fontsize=7.4, fontweight='bold', color="#1D4ED8")
+    ax.text(49.2, 77, "• Dense: bge-m3 embeddings\n• Sparse: BM25 lexical rank\n• Reciprocal Rank Fusion (k=60)",
             fontsize=6.2, color="#334155", linespacing=1.2)
 
     # Reranker
-    r2 = FancyBboxPatch((48.8, 57), 18.9, 13, boxstyle="round,pad=0.2",
+    r2 = FancyBboxPatch((48.2, 57), 19.6, 13, boxstyle="round,pad=0.2",
                         facecolor="white", edgecolor="#8B5CF6", linewidth=0.8)
     ax.add_patch(r2)
-    ax.text(49.8, 66.5, "Cross-Encoder Scoring", fontsize=7.4, fontweight='bold', color="#6D28D9")
-    ax.text(49.8, 62, "• BGE-Reranker-V2-M3\n• Fine-grained context matching\n• Scores relevance to query",
+    ax.text(49.2, 66.5, "Cross-Encoder Scoring", fontsize=7.4, fontweight='bold', color="#6D28D9")
+    ax.text(49.2, 62, "• BGE-Reranker-V2-M3 scoring\n• Fine-grained context matching\n• Resolves ambiguous candidates",
             fontsize=6.2, color="#334155", linespacing=1.2)
 
     # Top-k Routing
-    r3 = FancyBboxPatch((48.8, 44), 18.9, 11.5, boxstyle="round,pad=0.2",
+    r3 = FancyBboxPatch((48.2, 44), 19.6, 11.5, boxstyle="round,pad=0.2",
                         facecolor="#FEF3C7", edgecolor="#F59E0B", linewidth=0.8)
     ax.add_patch(r3)
-    ax.text(49.8, 52, "Balanced Routing", fontsize=7.4, fontweight='bold', color="#B45309")
-    ax.text(49.8, 47.5, "• Top-5 Chunks from Store 1 (SSoT)\n• Top-5 Chunks from Store 2 (Raw)\n• Total: 10 Chunks (~3,000 tokens)",
+    ax.text(49.2, 52, "Balanced Routing", fontsize=7.4, fontweight='bold', color="#B45309")
+    ax.text(49.2, 47.5, "• Top-5 Chunks from Store 1 (SSoT)\n• Top-5 Chunks from Store 2 (Raw)\n• Total: 10 Chunks (~3,000 tokens)",
             fontsize=6.2, color="#92400E", linespacing=1.2)
 
     # Column 4: Priority Arbitration Prompt & Generation (x: 71.5 to 98)
@@ -450,13 +461,18 @@ def generate_figure_2(output_paths):
     ax.text(84.75, 46, "Citation-backed, conflict-resolved answer", ha='center', va='center',
             fontsize=6.2, fontstyle='italic', color="#E0E7FF")
 
-    # Arrows between main components
-    # Query -> Stores
-    ax.add_patch(FancyArrowPatch((18.5, 68), (20.5, 68), arrowstyle="-|>", mutation_scale=12, color="#2563EB", lw=2))
-    # Stores -> Retrieval
-    ax.add_patch(FancyArrowPatch((43.7, 75), (47.5, 75), arrowstyle="-|>", mutation_scale=12, color="#059669", lw=1.8))
-    ax.add_patch(FancyArrowPatch((43.7, 54), (47.5, 54), arrowstyle="-|>", mutation_scale=12, color="#D97706", lw=1.8))
-    # Retrieval -> Generation
+    # Accurate Parallel Arrows:
+    # Query dispatches simultaneously to Store 1 and Store 2
+    arr_q1 = FancyArrowPatch((18.5, 75), (21.8, 75), arrowstyle="-|>", mutation_scale=12, color="#059669", lw=1.8)
+    ax.add_patch(arr_q1)
+    arr_q2 = FancyArrowPatch((18.5, 54), (21.8, 54), arrowstyle="-|>", mutation_scale=12, color="#D97706", lw=1.8)
+    ax.add_patch(arr_q2)
+
+    # Stores to Retrieval
+    ax.add_patch(FancyArrowPatch((43.5, 75), (47, 75), arrowstyle="-|>", mutation_scale=12, color="#059669", lw=1.8))
+    ax.add_patch(FancyArrowPatch((43.5, 54), (47, 54), arrowstyle="-|>", mutation_scale=12, color="#D97706", lw=1.8))
+    
+    # Retrieval to Generation
     ax.add_patch(FancyArrowPatch((69, 65), (71.5, 65), arrowstyle="-|>", mutation_scale=12, color="#4F46E5", lw=2))
 
     # Bottom Dashboard: Quantitative Empirical Performance
@@ -506,6 +522,55 @@ def generate_figure_2(output_paths):
         print(f"Saved Figure 2: {p}")
     plt.close(fig)
 
+def generate_figure_3(output_paths):
+    """
+    Figure 3: Accuracy-by-category grouped bar chart (Condition 1 vs Condition 2)
+    Standard academic styling with distinct hatched patterns for black-and-white / print readability.
+    """
+    categories = ["Temporal\n(N=30)", "Intra-Doc\n(N=20)", "Scope\n(N=20)", "Factoid\n(N=30)", "Overall\n(N=100)"]
+    condition1 = [26.7, 65.0, 50.0, 63.3, 50.0]
+    condition2 = [86.7, 70.0, 85.0, 93.3, 85.0]
+
+    fig, ax = plt.subplots(figsize=(9.8, 4.8), dpi=300)
+
+    x = list(range(len(categories)))
+    width = 0.35
+
+    bars1 = ax.bar([i - width / 2 for i in x], condition1, width, label="Condition 1: Raw-Only Hybrid RAG",
+                   facecolor="#F1F5F9", edgecolor="#1E293B", linewidth=1.2, hatch="///")
+    bars2 = ax.bar([i + width / 2 for i in x], condition2, width, label="Condition 2: Hierarchical Dual-Store RAG",
+                   facecolor="#0F172A", edgecolor="#0F172A", linewidth=1.2)
+
+    for b, v in zip(bars1, condition1):
+        ax.text(b.get_x() + b.get_width() / 2, v + 1.8, f"{v:.1f}%", ha='center', va='bottom',
+                fontsize=7.8, fontweight='bold', color="#334155")
+    for b, v in zip(bars2, condition2):
+        ax.text(b.get_x() + b.get_width() / 2, v + 1.8, f"{v:.1f}%", ha='center', va='bottom',
+                fontsize=8.0, fontweight='bold', color="#0F172A")
+
+    ax.set_xticks(x)
+    ax.set_xticklabels(categories, fontsize=8.5, fontweight='bold')
+    ax.set_ylabel("Factual Accuracy (%)", fontsize=9.5, fontweight='bold')
+    ax.set_ylim(0, 108)
+    ax.set_yticks(range(0, 101, 20))
+    ax.tick_params(axis='y', labelsize=8.5)
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['left'].set_color("#334155")
+    ax.spines['bottom'].set_color("#334155")
+    ax.yaxis.grid(True, color="#E2E8F0", linewidth=0.8, linestyle='--', zorder=0)
+    ax.set_axisbelow(True)
+    ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.16), ncol=2, fontsize=8.5, frameon=False)
+    ax.set_title("Factual Accuracy Across Conflict Categories: Raw Baseline vs. Dual-Store RAG",
+                 fontsize=10.5, fontweight='bold', pad=12, color="#0F172A")
+
+    plt.tight_layout()
+    for p in output_paths:
+        os.makedirs(os.path.dirname(p), exist_ok=True)
+        fig.savefig(p, format='pdf', bbox_inches='tight')
+        print(f"Saved Figure 3: {p}")
+    plt.close(fig)
+
 if __name__ == '__main__':
     setup_matplotlib()
     paths_fig1 = [
@@ -516,8 +581,14 @@ if __name__ == '__main__':
         "paper/08_arxiv_submission/source/figures/fig2_dual_store_architecture.pdf",
         "paper/07_arxiv/figures/fig2_dual_store_architecture.pdf"
     ]
+    paths_fig3 = [
+        "paper/08_arxiv_submission/source/figures/fig3_accuracy_comparison.pdf",
+        "paper/07_arxiv/figures/fig3_accuracy_comparison.pdf"
+    ]
     print("Generating Figure 1...")
     generate_figure_1(paths_fig1)
     print("Generating Figure 2...")
     generate_figure_2(paths_fig2)
-    print("Figures generated successfully!")
+    print("Generating Figure 3...")
+    generate_figure_3(paths_fig3)
+    print("All 3 figures generated successfully!")
