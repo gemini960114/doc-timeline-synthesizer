@@ -137,20 +137,20 @@ The Hierarchical Dual-Store design achieves parity with full-context synthesis
 overhead by **83.3%** and outperforming standard single-store RAG baselines
 statistically significantly ($p < 0.001$).
 
-### Residual Failure Attribution & Latent Accuracy
+### Residual Error Analysis & Failure Taxonomy
 
-![Failure Attribution & Latent Semantic Accuracy](docs/images/fig4_failure_attribution.png)
+![Post-Hoc Qualitative Error Taxonomy](docs/images/fig4_failure_attribution.png)
 
-An adversarial, itemized audit of the remaining 15% non-matching queries under Condition 2 (Dual-Store RAG) reveals that the deterministic 85.0% score serves as a conservative lower bound:
+A post-hoc qualitative error analysis of the 15 non-matching queries under Condition 2 (Hierarchical Dual-Store RAG) categorizes the failure modes under strict substring matching:
 
-| Failure Attribution Category | Count ($N=15$) | Proportion | Semantic Ground Truth Verdict | Root Cause Description |
+| Failure Category | Count ($N=15$) | Proportion | Factual Intent | Root Cause Description |
 |:---|:---:|:---:|:---:|:---|
-| **Harness String-Matching False Negatives** | **13** | **86.7%** | **100% Factually Correct** | Model correctly deduced canonical facts, but diverged in superficial formatting from rigid deterministic string matching (e.g., Markdown list formatting, written Chinese currency scaling, date punctuation variants). |
-| **Retrieval Chunk Cutoff** | 1 | 6.7% | Genuine Missing Detail | High-level summary chunk retained program totals but omitted an isolated minor line item under strict Top-5 retrieval. |
-| **Rubric Scope Misalignment** | 1 | 6.7% | Ground Truth Ambiguity | Question prompted for qualitative conditions, while the evaluation key demanded an unprompted budget sum. |
-| **Catastrophic Superseded Draft Traps** | **0** | **0.0%** | **Zero Incidents** | In zero cases did the model adopt outdated draft figures over ratified decisions. |
+| **Surface-Form Variations** | **13** | **86.7%** | Preserved | Output correctly identified canonical decisions but diverged in superficial syntax (e.g., structured Markdown lists, written Chinese currency scaling, date punctuation variants) outside rigid regex patterns. |
+| **Retrieval Context Truncation** | 1 | 6.7% | Truncated Detail | High-level summary chunk retained program totals but omitted an isolated minor line item under strict Top-5 retrieval. |
+| **Benchmark Rubric Ambiguity** | 1 | 6.7% | Ambiguous Key | Question prompted for qualitative conditions, while the evaluation rubric expected an unprompted budget figure. |
+| **Superseded Draft Traps** | **0** | **0.0%** | **None observed in sample** | Within the evaluated benchmark sample, no instances of adopting outdated or superseded draft figures over ratified decisions were observed. |
 
-Under latent semantic verification, the Dual-Store RAG workflow achieves **98.0% (98/100) factual accuracy**, with a verified 0.0% catastrophic error rate against superseded drafts.
+This breakdown indicates that the 85.0% score serves as a strict, reproducible benchmark under exact substring extraction, with the vast majority of non-matches attributable to surface formatting rather than factual degradation or temporal misalignment.
 
 ## Security and data boundary
 
