@@ -171,16 +171,16 @@ def generate_figure_1(output_paths):
                           facecolor="#FFFFFF", edgecolor="#64748B", linewidth=0.9)
     ax.add_patch(eng3)
     ax.text(col3_x + col3_w/2, 75.5, "Scope-Aware Arbitration", ha='center', va='center', fontsize=8.8, fontweight='bold', color='#0F172A')
-    ax.text(col3_x + col3_w/2, 72.0, "• 4-Mode Conflict Taxonomy:\n  - Temporal supersede\n  - Intra-doc contradiction\n  - Scope / geographic mismatch\n  - Direct factoid controls\n• Ratified decrees outrank drafts",
-            ha='center', va='top', fontsize=7.8, color='#475569', linespacing=1.35)
+    ax.text(col3_x + col3_w/2, 72.0, "• 4-Mode Conflict Taxonomy:\n  - Temporal supersede\n  - Intra-doc contradiction\n  - Scope / geographic mismatch\n  - Direct factoid controls\n• Authority considers provenance,\n  approval status & scope",
+            ha='center', va='top', fontsize=7.6, color='#475569', linespacing=1.3)
 
     # Artifacts Box
     eng3_out = FancyBboxPatch((col3_x + 1.2, 15.5), col3_w - 2.4, 29.5, boxstyle="round,pad=0.2",
                               facecolor="#F8FAFC", edgecolor="#475569", linewidth=0.9)
     ax.add_patch(eng3_out)
     ax.text(col3_x + col3_w/2, 41.5, "Single Source of Truth", ha='center', va='center', fontsize=8.8, fontweight='bold', color='#0F172A')
-    ax.text(col3_x + col3_w/2, 38.0, "4 Domain SSoT Reports:\n• Finance & Procurements\n• Oversight & Governance\n• Infrastructure Capacity\n• Cross-cutting Timeline",
-            ha='center', va='top', fontsize=7.8, color='#334155', linespacing=1.35)
+    ax.text(col3_x + col3_w/2, 38.0, "4 SSoT Reports:\n(3 Domain + 1 Cross-Domain)\n• Finance & Procurements\n• Oversight & Governance\n• Infrastructure Capacity\n• Cross-cutting Briefing",
+            ha='center', va='top', fontsize=7.5, color='#334155', linespacing=1.28)
     draw_pill(ax, col3_x + 1.8, 17.5, col3_w - 3.6, 5.2, "Candidate SSoT (~38k chars)", facecolor="#FFFFFF", edgecolor="#1E293B", text_color="#0F172A", fontsize=7.8)
 
     # ==========================================
@@ -371,7 +371,7 @@ def generate_figure_2(output_paths):
     ax.text(gen_x + gen_w/2, gen_y + 14.5, "Low-temperature decoding (temp = 0.1)", ha='center', va='center', fontsize=6.8, color='#475569')
 
     # Final Output Pill
-    draw_pill(ax, gen_x + 1.2, gen_y + 2.0, gen_w - 2.4, 8.0, "Verified Decision Answer\nCitation-backed, conflict-resolved", facecolor="#0F172A", text_color="#FFFFFF", fontsize=7.2)
+    draw_pill(ax, gen_x + 1.2, gen_y + 2.0, gen_w - 2.4, 8.0, "SSoT-Grounded Decision Answer\nCitation-backed, conflict-aware", facecolor="#0F172A", text_color="#FFFFFF", fontsize=7.2)
 
     # Arrows from Retrieval Lanes into Prompt Directive (High vs Low Priority Context)
     gap_mid_x = (ret_x + ret_w + gen_x) / 2
