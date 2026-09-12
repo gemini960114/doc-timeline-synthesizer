@@ -137,7 +137,7 @@ def generate_figure_1(output_paths):
                           facecolor="#FFFFFF", edgecolor="#64748B", linewidth=0.9)
     ax.add_patch(eng2)
     ax.text(col2_x + col2_w/2, 67.5, "Vision Agent Triage", ha='center', va='center', fontsize=8.8, fontweight='bold', color='#0F172A')
-    ax.text(col2_x + col2_w/2, 64.0, "• 48 decorative logos skipped\n• 44 charts & tables inspected\n• Resolves non-OCR raster scans\n• Recovers unlisted quotes",
+    ax.text(col2_x + col2_w/2, 64.0, "• 48 non-priority images triaged\n• 44 charts & tables inspected\n• Resolves non-OCR raster scans\n• Recovers unlisted quotes",
             ha='center', va='top', fontsize=8.0, color='#475569', linespacing=1.35)
 
     # Integrated Key Finding Box (Monochrome Academic Callout)
@@ -246,7 +246,9 @@ def generate_figure_1(output_paths):
     plt.tight_layout()
     for p in output_paths:
         os.makedirs(os.path.dirname(p), exist_ok=True)
-        fig.savefig(p, format='pdf', bbox_inches='tight', pad_inches=0.05)
+        fmt = 'png' if p.endswith('.png') else 'pdf'
+        dpi = 300 if fmt == 'png' else None
+        fig.savefig(p, format=fmt, dpi=dpi, bbox_inches='tight', pad_inches=0.05)
         print(f"Saved Figure 1: {p}")
     plt.close(fig)
 
@@ -412,7 +414,9 @@ def generate_figure_2(output_paths):
     plt.tight_layout()
     for p in output_paths:
         os.makedirs(os.path.dirname(p), exist_ok=True)
-        fig.savefig(p, format='pdf', bbox_inches='tight', pad_inches=0.05)
+        fmt = 'png' if p.endswith('.png') else 'pdf'
+        dpi = 300 if fmt == 'png' else None
+        fig.savefig(p, format=fmt, dpi=dpi, bbox_inches='tight', pad_inches=0.05)
         print(f"Saved Figure 2: {p}")
     plt.close(fig)
 
@@ -488,7 +492,9 @@ def generate_figure_3(output_paths):
     plt.tight_layout()
     for p in output_paths:
         os.makedirs(os.path.dirname(p), exist_ok=True)
-        fig.savefig(p, format='pdf', bbox_inches='tight', pad_inches=0.05)
+        fmt = 'png' if p.endswith('.png') else 'pdf'
+        dpi = 300 if fmt == 'png' else None
+        fig.savefig(p, format=fmt, dpi=dpi, bbox_inches='tight', pad_inches=0.05)
         print(f"Saved Figure 3: {p}")
     plt.close(fig)
 
@@ -502,15 +508,15 @@ def main():
     ]
     
     print("Generating Figure 1 (Monochrome Academic Pipeline Flow)...")
-    fig1_paths = [os.path.join(d, "fig1_workflow.pdf") for d in base_dirs]
+    fig1_paths = [os.path.join(d, "fig1_workflow.pdf") for d in base_dirs] + ["docs/images/fig1_workflow.png"]
     generate_figure_1(fig1_paths)
     
     print("Generating Figure 2 (Monochrome Academic Architecture Schematic)...")
-    fig2_paths = [os.path.join(d, "fig2_dual_store_architecture.pdf") for d in base_dirs]
+    fig2_paths = [os.path.join(d, "fig2_dual_store_architecture.pdf") for d in base_dirs] + ["docs/images/fig2_dual_store_architecture.png"]
     generate_figure_2(fig2_paths)
     
     print("Generating Figure 3 (Pure Monochrome Bar Chart)...")
-    fig3_paths = [os.path.join(d, "fig3_accuracy_comparison.pdf") for d in base_dirs]
+    fig3_paths = [os.path.join(d, "fig3_accuracy_comparison.pdf") for d in base_dirs] + ["docs/images/fig3_accuracy_comparison.png"]
     generate_figure_3(fig3_paths)
     
     print("All 3 figures generated successfully!")
