@@ -71,151 +71,151 @@ def generate_figure_1(output_paths):
     ax.add_patch(bg)
 
     # Top Header Ribbon (Monochrome)
-    head_ribbon = FancyBboxPatch((1.5, 92), 97, 6.8, boxstyle="round,pad=0.2",
+    head_ribbon = FancyBboxPatch((1.5, 91.5), 97, 7.2, boxstyle="round,pad=0.2",
                                  facecolor="#F8FAFC", edgecolor="#475569", linewidth=1.0)
     ax.add_patch(head_ribbon)
     # Left accent bar (solid dark slate)
-    ax.add_patch(FancyBboxPatch((1.5, 92), 1.0, 6.8, boxstyle="round,pad=0.05", facecolor="#0F172A", edgecolor="none"))
-    ax.text(50, 96.2, "MULTI-DOCUMENT KNOWLEDGE ARBITRATION & GOVERNANCE PIPELINE",
-            ha='center', va='center', fontsize=11.5, fontweight='bold', color='#0F172A')
-    ax.text(50, 93.6, "Separating Ingestion (L1), Multimodal Sidecar Enrichment (Step 0), Scope-Aware SSoT Distillation (L2), and Fresh-Session Review (L3)",
-            ha='center', va='center', fontsize=8.0, color='#475569')
+    ax.add_patch(FancyBboxPatch((1.5, 91.5), 1.0, 7.2, boxstyle="round,pad=0.05", facecolor="#0F172A", edgecolor="none"))
+    ax.text(50, 96.0, "MULTI-DOCUMENT KNOWLEDGE ARBITRATION & GOVERNANCE PIPELINE",
+            ha='center', va='center', fontsize=12.2, fontweight='bold', color='#0F172A')
+    ax.text(50, 93.2, "Separating Ingestion (L1), Multimodal Sidecar (Step 0), Scope-Aware Distillation (L2), and Adversarial Audit (L3)",
+            ha='center', va='center', fontsize=8.8, color='#475569')
 
     # ==========================================
     # STAGE 1: RAW CORPUS & LAYER 1 INGESTION
     # ==========================================
     col1_x, col1_w = 2.0, 20.5
-    ax.add_patch(FancyBboxPatch((col1_x, 13.5), col1_w, 76.5, boxstyle="round,pad=0.2",
+    ax.add_patch(FancyBboxPatch((col1_x, 13.0), col1_w, 76.5, boxstyle="round,pad=0.2",
                                 facecolor="#FAFAFA", edgecolor="#94A3B8", linewidth=1.0))
     
     # Header
-    ax.add_patch(FancyBboxPatch((col1_x, 84.0), col1_w, 6.0, boxstyle="round,pad=0.1",
+    ax.add_patch(FancyBboxPatch((col1_x, 83.5), col1_w, 6.0, boxstyle="round,pad=0.1",
                                 facecolor="#0F172A", edgecolor="none"))
-    ax.text(col1_x + col1_w/2, 87.0, "Layer 1: Physical Ingestion",
-            ha='center', va='center', fontsize=9.2, fontweight='bold', color='#FFFFFF')
-    ax.text(col1_x + col1_w/2, 82.0, "Module: docling-skill",
-            ha='center', va='center', fontsize=7.5, fontweight='bold', color='#475569')
+    ax.text(col1_x + col1_w/2, 86.5, "Layer 1: Physical Ingestion",
+            ha='center', va='center', fontsize=10.0, fontweight='bold', color='#FFFFFF')
+    ax.text(col1_x + col1_w/2, 81.0, "Module: docling-skill",
+            ha='center', va='center', fontsize=8.4, fontweight='bold', color='#475569')
 
     # Graphic: Document Stack
-    draw_doc_stack(ax, col1_x + 7.2, 71.5, 6.0, 8.0, count=3, offset=0.8, facecolor="#FFFFFF", edgecolor="#1E293B")
-    ax.text(col1_x + col1_w/2, 68.5, "27 Heterogeneous Files", ha='center', va='center', fontsize=8.2, fontweight='bold', color='#0F172A')
-    ax.text(col1_x + col1_w/2, 66.5, "• 16 Finance & Budget forms\n• 10 Admin Oversight reports\n• 1 Technical R&D spec\n• 92 embedded images",
-            ha='center', va='top', fontsize=7.0, color='#334155', linespacing=1.3)
+    draw_doc_stack(ax, col1_x + 6.8, 70.0, 6.8, 8.5, count=3, offset=0.8, facecolor="#FFFFFF", edgecolor="#1E293B")
+    ax.text(col1_x + col1_w/2, 66.8, "27 Heterogeneous Files", ha='center', va='center', fontsize=9.0, fontweight='bold', color='#0F172A')
+    ax.text(col1_x + col1_w/2, 64.5, "• 27 Budget, Admin & Tech docs\n• 92 embedded figures extracted",
+            ha='center', va='top', fontsize=8.2, color='#334155', linespacing=1.35)
 
     # Engine Box
     eng1 = FancyBboxPatch((col1_x + 1.2, 33.5), col1_w - 2.4, 20.0, boxstyle="round,pad=0.2",
                           facecolor="#FFFFFF", edgecolor="#64748B", linewidth=0.9)
     ax.add_patch(eng1)
-    ax.text(col1_x + col1_w/2, 50.0, "Physical Layout Normalizer", ha='center', va='center', fontsize=7.8, fontweight='bold', color='#0F172A')
-    ax.text(col1_x + col1_w/2, 47.5, "• Clean CJK character spacing\n• Preserve table cell grids\n• Extract embedded figures\n• Log structural manifest",
-            ha='center', va='top', fontsize=7.0, color='#475569', linespacing=1.3)
+    ax.text(col1_x + col1_w/2, 49.5, "Layout Normalization", ha='center', va='center', fontsize=8.8, fontweight='bold', color='#0F172A')
+    ax.text(col1_x + col1_w/2, 46.5, "• CJK spacing & cell preservation\n• Manifest & image extraction\n• Contractual layout isolation",
+            ha='center', va='top', fontsize=8.0, color='#475569', linespacing=1.35)
 
     # Contractual Outputs
-    draw_pill(ax, col1_x + 1.5, 23.5, col1_w - 3.0, 5.5, "source.md (Immutable)", facecolor="#F1F5F9", edgecolor="#334155", text_color="#0F172A")
-    draw_pill(ax, col1_x + 1.5, 16.0, col1_w - 3.0, 5.5, "source.manifest.json", facecolor="#F8FAFC", edgecolor="#94A3B8", text_color="#475569")
+    draw_pill(ax, col1_x + 1.2, 23.0, col1_w - 2.4, 5.5, "source.md (Immutable)", facecolor="#F1F5F9", edgecolor="#334155", text_color="#0F172A", fontsize=8.0)
+    draw_pill(ax, col1_x + 1.2, 15.5, col1_w - 2.4, 5.5, "source.manifest.json", facecolor="#F8FAFC", edgecolor="#94A3B8", text_color="#475569", fontsize=8.0)
 
     # ==========================================
     # STAGE 2: STEP ZERO (MULTIMODAL SIDECAR)
     # ==========================================
     col2_x, col2_w = 27.0, 21.0
-    ax.add_patch(FancyBboxPatch((col2_x, 13.5), col2_w, 76.5, boxstyle="round,pad=0.2",
+    ax.add_patch(FancyBboxPatch((col2_x, 13.0), col2_w, 76.5, boxstyle="round,pad=0.2",
                                 facecolor="#FAFAFA", edgecolor="#94A3B8", linewidth=1.0))
     
     # Header
-    ax.add_patch(FancyBboxPatch((col2_x, 84.0), col2_w, 6.0, boxstyle="round,pad=0.1",
+    ax.add_patch(FancyBboxPatch((col2_x, 83.5), col2_w, 6.0, boxstyle="round,pad=0.1",
                                 facecolor="#1E293B", edgecolor="none"))
-    ax.text(col2_x + col2_w/2, 87.0, "Step Zero: Vision Sidecar",
-            ha='center', va='center', fontsize=9.2, fontweight='bold', color='#FFFFFF')
-    ax.text(col2_x + col2_w/2, 82.0, "Module: scan_image_placeholders.py",
-            ha='center', va='center', fontsize=7.5, fontweight='bold', color='#475569')
+    ax.text(col2_x + col2_w/2, 86.5, "Step Zero: Vision Sidecar",
+            ha='center', va='center', fontsize=10.0, fontweight='bold', color='#FFFFFF')
+    ax.text(col2_x + col2_w/2, 81.0, "Module: scan_image_placeholders.py",
+            ha='center', va='center', fontsize=8.4, fontweight='bold', color='#475569')
 
     # Immutability Rule Banner
-    draw_pill(ax, col2_x + 1.2, 74.0, col2_w - 2.4, 5.2, "Preserve L1 Immutability (DEC-003)", facecolor="#F1F5F9", edgecolor="#334155", text_color="#0F172A", fontsize=6.8)
+    draw_pill(ax, col2_x + 1.2, 73.5, col2_w - 2.4, 5.2, "Preserve L1 Output (DEC-003)", facecolor="#F1F5F9", edgecolor="#334155", text_color="#0F172A", fontsize=7.8)
 
     # Inspection Box
     eng2 = FancyBboxPatch((col2_x + 1.2, 47.0), col2_w - 2.4, 24.5, boxstyle="round,pad=0.2",
                           facecolor="#FFFFFF", edgecolor="#64748B", linewidth=0.9)
     ax.add_patch(eng2)
-    ax.text(col2_x + col2_w/2, 68.0, "Vision Agent Triage", ha='center', va='center', fontsize=7.8, fontweight='bold', color='#0F172A')
-    ax.text(col2_x + col2_w/2, 65.0, "• 48 decorative logos skipped\n  (explicitly logged to skip.json)\n• 44 tables & charts inspected\n• Resolves non-OCR raster scans\n• Recovers unlisted quotes",
-            ha='center', va='top', fontsize=7.0, color='#475569', linespacing=1.3)
+    ax.text(col2_x + col2_w/2, 67.5, "Vision Agent Triage", ha='center', va='center', fontsize=8.8, fontweight='bold', color='#0F172A')
+    ax.text(col2_x + col2_w/2, 64.0, "• 48 decorative logos skipped\n• 44 charts & tables inspected\n• Resolves non-OCR raster scans\n• Recovers unlisted quotes",
+            ha='center', va='top', fontsize=8.0, color='#475569', linespacing=1.35)
 
     # Integrated Key Finding Box (Monochrome Academic Callout)
-    callout1 = FancyBboxPatch((col2_x + 1.2, 27.5), col2_w - 2.4, 17.5, boxstyle="round,pad=0.2",
+    callout1 = FancyBboxPatch((col2_x + 1.2, 26.5), col2_w - 2.4, 18.5, boxstyle="round,pad=0.2",
                               facecolor="#F1F5F9", edgecolor="#0F172A", linewidth=1.1)
     ax.add_patch(callout1)
-    ax.text(col2_x + col2_w/2, 41.5, "CRITICAL FINDING", ha='center', va='center', fontsize=7.0, fontweight='bold', color='#0F172A')
-    ax.text(col2_x + col2_w/2, 38.5, "20x Monetary Gap Surfaced\nRaster image uncovers NT$20M\nfrozen vs. NT$1M narrative text",
-            ha='center', va='top', fontsize=7.1, fontweight='bold', color='#0F172A', linespacing=1.25)
+    ax.text(col2_x + col2_w/2, 41.5, "CRITICAL FINDING", ha='center', va='center', fontsize=7.8, fontweight='bold', color='#0F172A')
+    ax.text(col2_x + col2_w/2, 38.5, "20x Monetary Gap Surfaced\nRaster reveals NT$20M frozen\nvs. NT$1M narrative text",
+            ha='center', va='top', fontsize=8.0, fontweight='bold', color='#0F172A', linespacing=1.3)
 
     # Output Pill
-    draw_pill(ax, col2_x + 1.2, 16.0, col2_w - 2.4, 8.5, "source.images.md\n(Multimodal Sidecar Layer)", facecolor="#FFFFFF", edgecolor="#1E293B", text_color="#0F172A", fontsize=7.2)
+    draw_pill(ax, col2_x + 1.2, 15.5, col2_w - 2.4, 9.0, "source.images.md\n(Multimodal Sidecar Layer)", facecolor="#FFFFFF", edgecolor="#1E293B", text_color="#0F172A", fontsize=8.0)
 
     # ==========================================
     # STAGE 3: LAYER 2 (SSOT DISTILLATION)
     # ==========================================
     col3_x, col3_w = 52.5, 21.0
-    ax.add_patch(FancyBboxPatch((col3_x, 13.5), col3_w, 76.5, boxstyle="round,pad=0.2",
+    ax.add_patch(FancyBboxPatch((col3_x, 13.0), col3_w, 76.5, boxstyle="round,pad=0.2",
                                 facecolor="#FAFAFA", edgecolor="#94A3B8", linewidth=1.0))
     
     # Header
-    ax.add_patch(FancyBboxPatch((col3_x, 84.0), col3_w, 6.0, boxstyle="round,pad=0.1",
+    ax.add_patch(FancyBboxPatch((col3_x, 83.5), col3_w, 6.0, boxstyle="round,pad=0.1",
                                 facecolor="#0F172A", edgecolor="none"))
-    ax.text(col3_x + col3_w/2, 87.0, "Layer 2: SSoT Distillation",
-            ha='center', va='center', fontsize=9.2, fontweight='bold', color='#FFFFFF')
-    ax.text(col3_x + col3_w/2, 82.0, "Module: doc-timeline-synthesizer",
-            ha='center', va='center', fontsize=7.5, fontweight='bold', color='#475569')
+    ax.text(col3_x + col3_w/2, 86.5, "Layer 2: SSoT Distillation",
+            ha='center', va='center', fontsize=10.0, fontweight='bold', color='#FFFFFF')
+    ax.text(col3_x + col3_w/2, 81.0, "Module: doc-timeline-synthesizer",
+            ha='center', va='center', fontsize=8.4, fontweight='bold', color='#475569')
 
     # Arbitration Box
     eng3 = FancyBboxPatch((col3_x + 1.2, 47.0), col3_w - 2.4, 32.5, boxstyle="round,pad=0.2",
                           facecolor="#FFFFFF", edgecolor="#64748B", linewidth=0.9)
     ax.add_patch(eng3)
-    ax.text(col3_x + col3_w/2, 76.0, "Scope-Aware Arbitration", ha='center', va='center', fontsize=7.8, fontweight='bold', color='#0F172A')
-    ax.text(col3_x + col3_w/2, 73.0, "• 4-Mode Conflict Resolution:\n  - Temporal supersede\n  - Intra-doc contradiction\n  - Geographic/scope mismatch\n  - Direct factoid controls\n• Ratified decrees outrank\n  preliminary draft figures",
-            ha='center', va='top', fontsize=7.0, color='#475569', linespacing=1.3)
+    ax.text(col3_x + col3_w/2, 75.5, "Scope-Aware Arbitration", ha='center', va='center', fontsize=8.8, fontweight='bold', color='#0F172A')
+    ax.text(col3_x + col3_w/2, 72.0, "• 4-Mode Conflict Taxonomy:\n  - Temporal supersede\n  - Intra-doc contradiction\n  - Scope / geographic mismatch\n  - Direct factoid controls\n• Ratified decrees outrank drafts",
+            ha='center', va='top', fontsize=7.8, color='#475569', linespacing=1.35)
 
     # Artifacts Box
-    eng3_out = FancyBboxPatch((col3_x + 1.2, 16.0), col3_w - 2.4, 29.0, boxstyle="round,pad=0.2",
+    eng3_out = FancyBboxPatch((col3_x + 1.2, 15.5), col3_w - 2.4, 29.5, boxstyle="round,pad=0.2",
                               facecolor="#F8FAFC", edgecolor="#475569", linewidth=0.9)
     ax.add_patch(eng3_out)
-    ax.text(col3_x + col3_w/2, 41.5, "Single Source of Truth", ha='center', va='center', fontsize=7.8, fontweight='bold', color='#0F172A')
-    ax.text(col3_x + col3_w/2, 38.5, "4 Domain SSoT Reports:\n• Finance & Procurements\n• Oversight & Governance\n• Infrastructure Capacity\n• Cross-cutting Timeline",
-            ha='center', va='top', fontsize=7.0, color='#334155', linespacing=1.3)
-    draw_pill(ax, col3_x + 2.0, 18.0, col3_w - 4.0, 5.2, "Candidate SSoT (~38k chars)", facecolor="#FFFFFF", edgecolor="#1E293B", text_color="#0F172A", fontsize=6.8)
+    ax.text(col3_x + col3_w/2, 41.5, "Single Source of Truth", ha='center', va='center', fontsize=8.8, fontweight='bold', color='#0F172A')
+    ax.text(col3_x + col3_w/2, 38.0, "4 Domain SSoT Reports:\n• Finance & Procurements\n• Oversight & Governance\n• Infrastructure Capacity\n• Cross-cutting Timeline",
+            ha='center', va='top', fontsize=7.8, color='#334155', linespacing=1.35)
+    draw_pill(ax, col3_x + 1.8, 17.5, col3_w - 3.6, 5.2, "Candidate SSoT (~38k chars)", facecolor="#FFFFFF", edgecolor="#1E293B", text_color="#0F172A", fontsize=7.8)
 
     # ==========================================
     # STAGE 4: LAYER 3 (FRESH-SESSION AUDITOR)
     # ==========================================
     col4_x, col4_w = 78.0, 20.5
-    ax.add_patch(FancyBboxPatch((col4_x, 13.5), col4_w, 76.5, boxstyle="round,pad=0.2",
+    ax.add_patch(FancyBboxPatch((col4_x, 13.0), col4_w, 76.5, boxstyle="round,pad=0.2",
                                 facecolor="#FAFAFA", edgecolor="#94A3B8", linewidth=1.0))
     
     # Header
-    ax.add_patch(FancyBboxPatch((col4_x, 84.0), col4_w, 6.0, boxstyle="round,pad=0.1",
+    ax.add_patch(FancyBboxPatch((col4_x, 83.5), col4_w, 6.0, boxstyle="round,pad=0.1",
                                 facecolor="#1E293B", edgecolor="none"))
-    ax.text(col4_x + col4_w/2, 87.0, "Layer 3: Fresh-Session Review",
-            ha='center', va='center', fontsize=9.2, fontweight='bold', color='#FFFFFF')
-    ax.text(col4_x + col4_w/2, 82.0, "Module: doc-timeline-auditor",
-            ha='center', va='center', fontsize=7.5, fontweight='bold', color='#475569')
+    ax.text(col4_x + col4_w/2, 86.5, "Layer 3: Fresh-Session Review",
+            ha='center', va='center', fontsize=10.0, fontweight='bold', color='#FFFFFF')
+    ax.text(col4_x + col4_w/2, 81.0, "Module: doc-timeline-auditor",
+            ha='center', va='center', fontsize=8.4, fontweight='bold', color='#475569')
 
     # Protocol Box
     eng4 = FancyBboxPatch((col4_x + 1.2, 50.0), col4_w - 2.4, 29.5, boxstyle="round,pad=0.2",
                           facecolor="#FFFFFF", edgecolor="#64748B", linewidth=0.9)
     ax.add_patch(eng4)
-    ax.text(col4_x + col4_w/2, 76.0, "Zero-Memory Auditor (DEC-002)", ha='center', va='center', fontsize=7.8, fontweight='bold', color='#0F172A')
-    ax.text(col4_x + col4_w/2, 73.0, "• Independent agent context\n• Zero access to L2 history\n• 5-Point Adversarial Audit:\n  1. Citation resolvability\n  2. Source risk disclosure\n  3. Cross-timestamp splicing\n  4. Coverage sampling\n  5. Arithmetic recalculation",
-            ha='center', va='top', fontsize=6.8, color='#475569', linespacing=1.25)
+    ax.text(col4_x + col4_w/2, 75.5, "Zero-Memory Auditor (DEC-002)", ha='center', va='center', fontsize=8.8, fontweight='bold', color='#0F172A')
+    ax.text(col4_x + col4_w/2, 72.0, "• Independent agent context\n• Zero access to L2 history\n• 5-Point Adversarial Audit:\n  1. Citation resolvability\n  2. Risk disclosure check\n  3. Cross-timestamp splicing\n  4. Coverage sampling\n  5. Arithmetic recalculation",
+            ha='center', va='top', fontsize=7.6, color='#475569', linespacing=1.3)
 
     # Integrated Key Finding Box (Monochrome Academic Callout)
-    callout2 = FancyBboxPatch((col4_x + 1.2, 29.5), col4_w - 2.4, 18.5, boxstyle="round,pad=0.2",
+    callout2 = FancyBboxPatch((col4_x + 1.2, 28.5), col4_w - 2.4, 19.5, boxstyle="round,pad=0.2",
                               facecolor="#F1F5F9", edgecolor="#0F172A", linewidth=1.1)
     ax.add_patch(callout2)
-    ax.text(col4_x + col4_w/2, 44.5, "VERIFICATION BOTTLENECK", ha='center', va='center', fontsize=7.0, fontweight='bold', color='#0F172A')
+    ax.text(col4_x + col4_w/2, 44.5, "VERIFICATION BOTTLENECK", ha='center', va='center', fontsize=7.8, fontweight='bold', color='#0F172A')
     ax.text(col4_x + col4_w/2, 41.5, "Arithmetic Error Corrected\nCatches 37.7% -> 41.8% discrepancy\nmissed by L2 self-checking",
-            ha='center', va='top', fontsize=7.1, fontweight='bold', color='#0F172A', linespacing=1.25)
+            ha='center', va='top', fontsize=8.0, fontweight='bold', color='#0F172A', linespacing=1.3)
 
     # Terminal Trust Anchor Pill
-    draw_pill(ax, col4_x + 1.2, 16.0, col4_w - 2.4, 10.5, "AUDITED SSoT ARCHIVE\nIndexed to Store 1 of RAG\nPowers Decision Support", facecolor="#0F172A", edgecolor="#000000", text_color="#FFFFFF", fontsize=7.2)
+    draw_pill(ax, col4_x + 1.2, 15.5, col4_w - 2.4, 11.0, "AUDITED SSoT ARCHIVE\nIndexed to Store 1 of RAG\nPowers Decision Support", facecolor="#0F172A", edgecolor="#000000", text_color="#FFFFFF", fontsize=8.2)
 
     # ==========================================
     # INTER-STAGE ARROWS & FLOW CONNECTORS
@@ -224,24 +224,24 @@ def generate_figure_1(output_paths):
     
     # 1 -> 2 connector (L1 output -> Step 0)
     ax.add_patch(FancyArrowPatch((col1_x + col1_w, 52.0), (col2_x, 52.0), **arrow_style))
-    draw_pill(ax, (col1_x + col1_w + col2_x)/2 - 2.1, 53.5, 4.2, 4.2, "source.md\nplaceholders", facecolor="#FFFFFF", edgecolor="#475569", text_color="#0F172A", fontsize=5.6)
+    draw_pill(ax, (col1_x + col1_w + col2_x)/2 - 2.2, 53.5, 4.4, 4.2, "source.md\nplaceholders", facecolor="#FFFFFF", edgecolor="#475569", text_color="#0F172A", fontsize=6.2)
 
     # 2 -> 3 connector (Step 0 sidecar -> L2)
     ax.add_patch(FancyArrowPatch((col2_x + col2_w, 52.0), (col3_x, 52.0), **arrow_style))
-    draw_pill(ax, (col2_x + col2_w + col3_x)/2 - 2.1, 53.5, 4.2, 4.2, "source.images.md\nsidecars", facecolor="#FFFFFF", edgecolor="#475569", text_color="#0F172A", fontsize=5.6)
+    draw_pill(ax, (col2_x + col2_w + col3_x)/2 - 2.2, 53.5, 4.4, 4.2, "source.images.md\nsidecars", facecolor="#FFFFFF", edgecolor="#475569", text_color="#0F172A", fontsize=6.2)
 
     # 3 -> 4 connector (L2 Candidate SSoT -> L3 Auditor)
     ax.add_patch(FancyArrowPatch((col3_x + col3_w, 52.0), (col4_x, 52.0), **arrow_style))
-    draw_pill(ax, (col3_x + col3_w + col4_x)/2 - 2.1, 53.5, 4.2, 4.2, "Candidate\nSSoT Reports", facecolor="#FFFFFF", edgecolor="#475569", text_color="#0F172A", fontsize=5.6)
+    draw_pill(ax, (col3_x + col3_w + col4_x)/2 - 2.2, 53.5, 4.4, 4.2, "Candidate\nSSoT Reports", facecolor="#FFFFFF", edgecolor="#475569", text_color="#0F172A", fontsize=6.2)
 
     # Bottom Foundation Ribbon (Monochrome)
-    bot_ribbon = FancyBboxPatch((1.5, 3.5), 97, 7.5, boxstyle="round,pad=0.2",
+    bot_ribbon = FancyBboxPatch((1.5, 3.5), 97, 7.8, boxstyle="round,pad=0.2",
                                 facecolor="#F8FAFC", edgecolor="#475569", linewidth=1.0)
     ax.add_patch(bot_ribbon)
     ax.text(50, 8.5, "DOWNSTREAM INTEGRATION: AUDITED SINGLE SOURCE OF TRUTH (SSoT)",
-            ha='center', va='center', fontsize=9.2, fontweight='bold', color='#0F172A')
+            ha='center', va='center', fontsize=9.8, fontweight='bold', color='#0F172A')
     ax.text(50, 5.5, "Indexed directly into Store 1 of Hierarchical Dual-Store RAG • Eliminates Hallucination & Hallucinated Draft Traps",
-            ha='center', va='center', fontsize=7.6, color='#475569')
+            ha='center', va='center', fontsize=8.2, color='#475569')
 
     plt.tight_layout()
     for p in output_paths:
