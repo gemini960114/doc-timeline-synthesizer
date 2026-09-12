@@ -144,7 +144,7 @@ only. It does not include the research corpus, internal administrative
 documents, raw conversations, derived record-level research ledgers, or
 manuscript supplements.
 
-In accordance with institutional data governance and ethical requirements (ISS-06):
+In accordance with institutional data governance and ethical requirements:
 - The `evaluation/` directory houses local evaluation scripts and configurations.
 - All live API keys (`evaluation/.env`), local virtual environments (`evaluation/.venv/`),
   and binary vector stores (`evaluation/chroma_db/`) are strictly excluded.

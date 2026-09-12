@@ -240,7 +240,7 @@ def generate_figure_1(output_paths):
     ax.add_patch(bot_ribbon)
     ax.text(50, 8.5, "DOWNSTREAM INTEGRATION: AUDITED SINGLE SOURCE OF TRUTH (SSoT)",
             ha='center', va='center', fontsize=9.8, fontweight='bold', color='#0F172A')
-    ax.text(50, 5.5, "Indexed directly into Store 1 of Hierarchical Dual-Store RAG • Eliminates Hallucination & Hallucinated Draft Traps",
+    ax.text(50, 5.5, "Indexed directly into Store 1 of Hierarchical Dual-Store RAG • Mitigates Knowledge-Conflict Errors & Superseded-Draft Traps",
             ha='center', va='center', fontsize=8.2, color='#475569')
 
     plt.tight_layout()
@@ -368,7 +368,7 @@ def generate_figure_2(output_paths):
     ax.add_patch(FancyBboxPatch((gen_x + 1.2, gen_y + 22.5), gen_w - 2.4, 4.0, boxstyle="round,pad=0.05", facecolor="#334155", edgecolor="none"))
     ax.text(gen_x + gen_w/2, gen_y + 24.5, "Generator LLM Engine", ha='center', va='center', fontsize=7.4, fontweight='bold', color='#FFFFFF')
     ax.text(gen_x + gen_w/2, gen_y + 18.5, "gemma-4-31B-it (vLLM local)", ha='center', va='center', fontsize=7.4, fontweight='bold', color='#0F172A')
-    ax.text(gen_x + gen_w/2, gen_y + 14.5, "Greedy Decoding (temp = 0.0)", ha='center', va='center', fontsize=6.8, color='#475569')
+    ax.text(gen_x + gen_w/2, gen_y + 14.5, "Low-temperature decoding (temp = 0.1)", ha='center', va='center', fontsize=6.8, color='#475569')
 
     # Final Output Pill
     draw_pill(ax, gen_x + 1.2, gen_y + 2.0, gen_w - 2.4, 8.0, "Verified Decision Answer\nCitation-backed, conflict-resolved", facecolor="#0F172A", text_color="#FFFFFF", fontsize=7.2)

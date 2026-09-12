@@ -102,7 +102,7 @@ doc-timeline-auditor/SKILL.md 進行 L3 審核。建立 RAG 輸入檔：
 
 公開 repo 只包含通用工作流與工具，不包含研究語料、內部行政文件、原始對話、逐筆研究 ledger 或論文 supplement。
 
-依據研究機構資料治理與倫理合規要求（ISS-06）：
+依據研究機構資料治理與倫理合規要求：
 - `evaluation/` 資料夾包含本機評測腳本與環境配置。
 - 所有即時 API 金鑰（`evaluation/.env`）、本機虛擬環境（`evaluation/.venv/`）與二進位向量資料庫（`evaluation/chroma_db/`）皆已透過 `.gitignore` 嚴格排除。
 - 未去識別化之內部評測題目集（`evaluation/benchmark/`）與執行過程之 Prompt/生成紀錄（`evaluation/results/`）包含機敏行政案例，嚴禁推送到公開儲存庫。
