@@ -164,8 +164,20 @@ separate authorization and human verification.
 
 ## Citation
 
-Citation metadata for the software is provided in CITATION.cff. An associated
-preprint citation can be added after an arXiv identifier is assigned.
+If you use this codebase or refer to the methodology, please cite:
+
+```bibtex
+@article{chuang2026resolving,
+  title   = {Resolving Versioned Knowledge Conflicts with Single-Source-of-Truth Arbitration and Hierarchical Dual-Store RAG},
+  author  = {Chuang, Chao-Chun and Yao, Chih-Min and Lee, Tsui-Mei and Liu, Yi-Ni},
+  journal = {arXiv preprint},
+  year    = {2026},
+  url     = {https://github.com/gemini960114/doc-timeline-synthesizer}
+}
+```
+
+Machine-readable citation metadata is also maintained in [CITATION.cff](file:///home/ubuntu/github/doc-timeline-synthesizer/CITATION.cff). An updated preprint identifier (arXiv ID and DOI) will be integrated once issued.
+
 
 ## License
 

@@ -1,10 +1,36 @@
 cff-version: 1.2.0
-message: "If you use this software, please cite it using the metadata in this file."
+message: "If you use this software or cite the methodology, please cite both the paper and the software."
 title: "doc-timeline-synthesizer"
 type: software
 authors:
   - family-names: "Chuang"
     given-names: "Chao-Chun"
+    email: "c00cjz00@niar.org.tw"
+    affiliation: "National Center for High-performance Computing (NCHC), National Institutes of Applied Research (NIAR), Taiwan"
+  - family-names: "Yao"
+    given-names: "Chih-Min"
+    affiliation: "National Center for High-performance Computing (NCHC), National Institutes of Applied Research (NIAR), Taiwan"
+  - family-names: "Lee"
+    given-names: "Tsui-Mei"
+    affiliation: "National Center for High-performance Computing (NCHC), National Institutes of Applied Research (NIAR), Taiwan"
+  - family-names: "Liu"
+    given-names: "Yi-Ni"
+    affiliation: "Department of Medical Informatics, Chung Shan Medical University, Taichung, Taiwan"
+preferred-citation:
+  type: article
+  authors:
+    - family-names: "Chuang"
+      given-names: "Chao-Chun"
+    - family-names: "Yao"
+      given-names: "Chih-Min"
+    - family-names: "Lee"
+      given-names: "Tsui-Mei"
+    - family-names: "Liu"
+      given-names: "Yi-Ni"
+  title: "Resolving Versioned Knowledge Conflicts with Single-Source-of-Truth Arbitration and Hierarchical Dual-Store RAG"
+  journal: "arXiv preprint"
+  year: 2026
+  url: "https://github.com/gemini960114/doc-timeline-synthesizer"
 repository-code: "https://github.com/gemini960114/doc-timeline-synthesizer"
 url: "https://github.com/gemini960114/doc-timeline-synthesizer"
 version: 1.2.0
@@ -16,3 +42,4 @@ keywords:
   - provenance
   - retrieval-augmented generation
   - scope-aware arbitration
+  - single source of truth
