@@ -107,6 +107,18 @@ doc-timeline-auditor/SKILL.md 進行 L3 審核。建立 RAG 輸入檔：
 
 ## 引用與授權
 
-軟體引用資訊見 CITATION.cff。待取得 arXiv ID 後，可再補上論文引用。
+若您在研究中使用本專案或引用相關方法，請引用我們的預印本論文：
+
+```bibtex
+@article{chuang2026resolving,
+  title   = {Resolving Knowledge Conflicts in Versioned Documents with Hierarchical Dual-Store RAG},
+  author  = {Chuang, Chao-Chun and Yao, Chih-Min and Lee, Tsui-Mei and Liu, Yi-Ni},
+  journal = {arXiv preprint},
+  year    = {2026},
+  url     = {https://github.com/gemini960114/doc-timeline-synthesizer}
+}
+```
+
+機器可讀之引用詮釋資料請參見 [CITATION.cff](file:///home/ubuntu/github/doc-timeline-synthesizer/CITATION.cff)。取得正式 arXiv ID 與 DOI 後將同步更新。
 
 本專案採 MIT License，詳見 LICENSE。

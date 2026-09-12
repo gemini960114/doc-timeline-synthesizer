@@ -168,7 +168,7 @@ If you use this codebase or refer to the methodology, please cite:
 
 ```bibtex
 @article{chuang2026resolving,
-  title   = {Resolving Versioned Knowledge Conflicts with Single-Source-of-Truth Arbitration and Hierarchical Dual-Store RAG},
+  title   = {Resolving Knowledge Conflicts in Versioned Documents with Hierarchical Dual-Store RAG},
   author  = {Chuang, Chao-Chun and Yao, Chih-Min and Lee, Tsui-Mei and Liu, Yi-Ni},
   journal = {arXiv preprint},
   year    = {2026},

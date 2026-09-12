@@ -27,7 +27,7 @@ preferred-citation:
       given-names: "Tsui-Mei"
     - family-names: "Liu"
       given-names: "Yi-Ni"
-  title: "Resolving Versioned Knowledge Conflicts with Single-Source-of-Truth Arbitration and Hierarchical Dual-Store RAG"
+  title: "Resolving Knowledge Conflicts in Versioned Documents with Hierarchical Dual-Store RAG"
   journal: "arXiv preprint"
   year: 2026
   url: "https://github.com/gemini960114/doc-timeline-synthesizer"
