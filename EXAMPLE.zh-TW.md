@@ -27,7 +27,7 @@
 
     uv run python scripts/scan_image_placeholders.py       --input-dir output/example_domain
 
-若圖片包含決策相關證據，將說明寫入 source.images.md 並對應原始 placeholder。若只是標誌或裝飾圖片，應建立附理由的略過紀錄，不可默默忽略。
+若圖片包含決策相關證據，將說明寫入 source.images.md 並對應原始 placeholder。若經判定不具決策實質內容（例如純商標或活動照片），應建立附理由的略過紀錄，不可默默忽略。
 
 ## 4. 建立時序盤點
 

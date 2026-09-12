@@ -17,7 +17,7 @@
    - 保留結構化清單（`source.manifest.json`）與原始表格格位，嚴禁在 L1 階段進行具幻覺風險的就地篡改。
 2. **Step Zero — 多模態邊車擴充（Multimodal Sidecar Enrichment，`scan_image_placeholders.py`）**：
    - 掃描並定位 `[[image:...]]` 佔位符，分派視覺模型專責辨識。
-   - 過濾裝飾性圖標（記錄於 `source.images.skip.json`），將關鍵光柵圖表提取為獨立邊車檔案 `source.images.md`。
+   - 檢驗並記錄略過非決策優先級圖片（如純商標、活動照片等，記錄於 `source.images.skip.json`），將決策關鍵之光柵圖表提取為獨立邊車檔案 `source.images.md`。
    - 嚴格維持 L1 輸出之不可變性（DEC-003）。
 3. **L2 — 範圍感知蒸餾（Scope-Aware SSoT Distillation，`doc-timeline-synthesizer`）**：
    - 建立時間序列並分類四大衝突類型（時序覆蓋、公文內矛盾、統計範圍不一致、事實基線衝突）。

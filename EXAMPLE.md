@@ -31,9 +31,9 @@ source.evidence.json.
     uv run python scripts/scan_image_placeholders.py       --input-dir output/example_domain
 
 If an image contains decision-relevant evidence, describe it in
-source.images.md with a pointer to the original placeholder. If it is only a
-logo or decorative image, record a reasoned skip marker rather than silently
-ignoring it.
+source.images.md with a pointer to the original placeholder. If it is judged
+to carry no decision-relevant content (e.g., pure logos or event photographs),
+record a reasoned skip marker rather than silently ignoring it.
 
 ## 4. Build the chronological inventory
 

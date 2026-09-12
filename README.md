@@ -22,7 +22,7 @@ The workflow decomposes document synthesis and governance into distinct stages:
    - Preserves manifests (`source.manifest.json`) and evidence artifacts without in-place hallucinated repairs.
 2. **Step Zero — Multimodal Sidecar Enrichment (`scan_image_placeholders.py`)**:
    - Scans and detects unresolved `[[image:...]]` placeholders in `source.md`.
-   - Dispatches a vision agent to inspect figures, logging decorative logos to `source.images.skip.json` and transcribing decision-critical charts/tables into an independent sidecar file, `source.images.md`.
+   - Dispatches a vision agent to inspect figures, logging non-priority figures (e.g., logos, photo placeholders) to `source.images.skip.json` and transcribing decision-critical charts/tables into an independent sidecar file, `source.images.md`.
    - Strictly preserves L1 immutability without mutating original `source.md` (DEC-003).
 3. **L2 — Scope-Aware SSoT Distillation (`doc-timeline-synthesizer`)**:
    - Orders records chronologically and extracts comparable claims across 4 conflict modes (temporal supersede, intra-doc contradiction, scope mismatch, direct factoid).
