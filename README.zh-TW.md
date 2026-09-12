@@ -8,22 +8,25 @@
 
 ## 架構設計
 
-1. L1 — 實體轉換
-   - 將 DOCX、PDF、XLSX、PPTX 等文件轉成 source.md。
-   - 保留 docling-skill 產生的 manifest 與 evidence。
-2. L2 — 範圍感知蒸餾
-   - 建立時間序。
-   - 移除重複樣板文字。
-   - 只在範圍相容、證據充分時進行版本仲裁。
-   - 產生逐項附出處的領域總整理。
-3. L3 — 新脈絡審核
-   - 以新的 agent context 逆向檢查成品與原始語料。
-   - 不提供 L2 的對話歷史或推理軌跡。
-   - 檢查引用、來源風險、跨版本拼接、覆蓋度、算術與統計範圍。
-   - 新脈絡分離不等同於不同模型家族的獨立性。
-4. 下游整合 — 分層雙庫 RAG（Hierarchical Dual-Store RAG）
-   - 將細部原始文件（`source.rag.md`）與經稽核的 SSoT 報告（`reports/*.md`）分置於兩個獨立向量/混合集合。
-   - 查詢時兩庫並行檢索，並透過優先權仲裁 Prompting 指引生成模型：遇數值或事實衝突時優先採信 SSoT 報告，同時保留原始公文之時序背景與佐證細節。
+![多文件知識仲裁與治理流水線](docs/images/fig1_workflow.png)
+
+本工作流將多文件知識蒸餾與治理拆解為四個核心階段：
+
+1. **L1 — 實體轉換（Physical Ingestion，`docling-skill`）**：
+   - 將 DOCX、PDF、XLSX、PPTX 等異質文件標準化轉為不可變的 `source.md`。
+   - 保留結構化清單（`source.manifest.json`）與原始表格格位，嚴禁在 L1 階段進行具幻覺風險的就地篡改。
+2. **Step Zero — 多模態邊車擴充（Multimodal Sidecar Enrichment，`scan_image_placeholders.py`）**：
+   - 掃描並定位 `[[image:...]]` 佔位符，分派視覺模型專責辨識。
+   - 過濾裝飾性圖標（記錄於 `source.images.skip.json`），將關鍵光柵圖表提取為獨立邊車檔案 `source.images.md`。
+   - 嚴格維持 L1 輸出之不可變性（DEC-003）。
+3. **L2 — 範圍感知蒸餾（Scope-Aware SSoT Distillation，`doc-timeline-synthesizer`）**：
+   - 建立時間序列並分類四大衝突類型（時序覆蓋、公文內矛盾、統計範圍不一致、事實基線衝突）。
+   - 依據公文核定效力、出處與簽核狀態判定權威性，而非粗糙的「新覆蓋舊」。
+   - 產出具備逐項引用的單一真實來源（Single Source of Truth，SSoT）領域報告。
+4. **L3 — 新脈絡審核（Fresh-Session Adversarial Audit，`doc-timeline-auditor`）**：
+   - 在完全獨立、清空歷史記憶的 agent context 中，逆向檢驗 SSoT 報告與原始語料（DEC-002）。
+   - 執行五維度對抗審核：引用可解析性、來源風險揭露、跨時戳拼接檢驗、抽樣覆蓋度、算術重新驗算。
+   - 杜絕代理人自我強化之盲點與數值計算錯誤。
 
 ## 核心規則
 
@@ -71,7 +74,18 @@ doc-timeline-auditor/SKILL.md 進行 L3 審核。建立 RAG 輸入檔：
 
 完整合成案例請見 EXAMPLE.zh-TW.md。
 
+## 下游整合：分層雙庫 RAG（Hierarchical Dual-Store RAG）
+
+![分層雙庫 RAG 架構圖](docs/images/fig2_dual_store_architecture.png)
+
+為突破長文本記憶體限制並保證檢索決策之權威性，本架構提出**分層雙庫 RAG**：
+- **Store 1（SSoT 權威總庫）**：收納經 L3 稽核之高層次領域 SSoT 報告（100 個區塊），賦予**高優先級（權威權限）**。
+- **Store 2（原始佐證庫）**：收納細部未壓縮之原始公文區塊（4,655 個區塊），賦予**低優先級（情境與背景佐證）**。
+- **並行混合分派與優先權仲裁 Prompting**：收到查詢後，以稠密向量（Dense BGE-M3）+ BM25 + 交叉編碼器重排（Cross-Encoder Reranker）並行檢索雙庫，取得平衡之 Top-5 + Top-5 區塊，並透過 Prompting 指令引導生成模型（`gemma-4-31B-it`）：遇數值或事實衝突時優先採信 SSoT 報告，同時保留原始公文之時序背景與佐證細節。
+
 ## 量化評測成果
+
+![各題型準確率比較圖](docs/images/fig3_accuracy_comparison.png)
 
 本工作流之下游檢索效益在涵蓋時序版本更新、多年度軌跡追蹤、跨實體陷阱與預算提案衝突之 100 題對抗基準測試中進行驗證：
 

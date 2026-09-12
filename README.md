@@ -13,29 +13,25 @@ resolved, the conflict remains explicit.
 
 ## Architecture
 
-The workflow separates three responsibilities:
+![Multi-Document Knowledge Arbitration & Governance Pipeline](docs/images/fig1_workflow.png)
 
-1. L1 — physical conversion
-   - Converts DOCX, PDF, XLSX, PPTX, and related files into source.md records.
-   - Preserves manifests and evidence artifacts produced by docling-skill.
-2. L2 — scope-aware synthesis
-   - Orders records chronologically.
-   - Removes repeated administrative boilerplate.
-   - Extracts comparable claims and resolves only evidence-supported versions.
-   - Produces citation-backed domain summaries.
-3. L3 — fresh-context audit
-   - Reviews an already-produced summary against the source corpus.
-   - Receives neither the producer's conversation history nor reasoning trace.
-   - Checks citation resolvability, source risk, cross-version splicing,
-     coverage, arithmetic, and statistical scope.
-   - Context separation is not the same as model-family independence.
-4. Downstream integration — Hierarchical Dual-Store RAG
-   - Maintains separate vector/hybrid collections for granular raw documents
-     (`source.rag.md`) and audited SSoT reports (`reports/*.md`).
-   - Retrieves from both collections simultaneously.
-   - Uses priority arbitration prompting: the generator is instructed to treat
-     audited SSoT reports as authoritative on disputed facts while citing raw
-     provenance for granular situational details.
+The workflow decomposes document synthesis and governance into distinct stages:
+
+1. **L1 — Physical Ingestion (`docling-skill`)**:
+   - Converts DOCX, PDF, XLSX, PPTX, and related files into immutable `source.md` records.
+   - Preserves manifests (`source.manifest.json`) and evidence artifacts without in-place hallucinated repairs.
+2. **Step Zero — Multimodal Sidecar Enrichment (`scan_image_placeholders.py`)**:
+   - Scans and detects unresolved `[[image:...]]` placeholders in `source.md`.
+   - Dispatches a vision agent to inspect figures, logging decorative logos to `source.images.skip.json` and transcribing decision-critical charts/tables into an independent sidecar file, `source.images.md`.
+   - Strictly preserves L1 immutability without mutating original `source.md` (DEC-003).
+3. **L2 — Scope-Aware SSoT Distillation (`doc-timeline-synthesizer`)**:
+   - Orders records chronologically and extracts comparable claims across 4 conflict modes (temporal supersede, intra-doc contradiction, scope mismatch, direct factoid).
+   - Arbitrates based on provenance, official ratification decrees, and explicit approval status rather than crude recency.
+   - Produces citation-backed Single Source of Truth (SSoT) domain reports.
+4. **L3 — Fresh-Session Adversarial Audit (`doc-timeline-auditor`)**:
+   - Reviews candidate SSoT summaries against raw source corpora in an independent agent session with zero memory of L2's reasoning trace (DEC-002).
+   - Executes a 5-point adversarial audit: citation resolvability, source risk disclosure, cross-timestamp splicing, coverage sampling, and arithmetic recalculation.
+   - Prevents self-reinforcing consensus errors and arithmetic drift before publication.
 
 ## Core rules
 
@@ -112,7 +108,18 @@ source.images.md and source.images.skip.json are optional and mutually
 purpose-specific. Generated source.rag.md files are disposable and should be
 rebuilt whenever their inputs change.
 
+## Downstream Integration: Hierarchical Dual-Store RAG
+
+![Hierarchical Dual-Store RAG Architecture](docs/images/fig2_dual_store_architecture.png)
+
+To scale beyond context-window boundaries while maintaining authoritative factual accuracy, the architecture introduces a **Hierarchical Dual-Store RAG**:
+- **Store 1 (Distilled SSoT Reports)**: Houses high-level, audited Single Source of Truth summaries (100 chunks). Treated with **high priority (authority)**.
+- **Store 2 (Raw Corpus)**: Houses granular, unprocessed document chunks (4,655 chunks). Treated with **low priority (evidence & situational context)**.
+- **Parallel Hybrid Dispatch & Priority Arbitration**: Ingests queries concurrently across both vector collections via dense embedding (`bge-m3`) + sparse BM25 with cross-encoder reranking, retrieving a balanced Top-5 + Top-5 chunk set. Generator LLMs (`gemma-4-31B-it`) are governed by an explicit priority arbitration directive instructing them to treat SSoT findings as authoritative whenever raw archival text conflicts with ratified figures.
+
 ## Empirical quantitative evaluation
+
+![Factual Accuracy Across Conflict Categories](docs/images/fig3_accuracy_comparison.png)
 
 The workflow's downstream retrieval impact was evaluated on an adversarial
 100-question benchmark featuring temporal superseded revisions, multi-year
