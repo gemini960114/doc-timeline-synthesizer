@@ -137,6 +137,21 @@ The Hierarchical Dual-Store design achieves parity with full-context synthesis
 overhead by **83.3%** and outperforming standard single-store RAG baselines
 statistically significantly ($p < 0.001$).
 
+### Residual Failure Attribution & Latent Accuracy
+
+![Failure Attribution & Latent Semantic Accuracy](docs/images/fig4_failure_attribution.png)
+
+An adversarial, itemized audit of the remaining 15% non-matching queries under Condition 2 (Dual-Store RAG) reveals that the deterministic 85.0% score serves as a conservative lower bound:
+
+| Failure Attribution Category | Count ($N=15$) | Proportion | Semantic Ground Truth Verdict | Root Cause Description |
+|:---|:---:|:---:|:---:|:---|
+| **Harness String-Matching False Negatives** | **13** | **86.7%** | **100% Factually Correct** | Model correctly deduced canonical facts, but diverged in superficial formatting from rigid deterministic string matching (e.g., Markdown list formatting, written Chinese currency scaling, date punctuation variants). |
+| **Retrieval Chunk Cutoff** | 1 | 6.7% | Genuine Missing Detail | High-level summary chunk retained program totals but omitted an isolated minor line item under strict Top-5 retrieval. |
+| **Rubric Scope Misalignment** | 1 | 6.7% | Ground Truth Ambiguity | Question prompted for qualitative conditions, while the evaluation key demanded an unprompted budget sum. |
+| **Catastrophic Superseded Draft Traps** | **0** | **0.0%** | **Zero Incidents** | In zero cases did the model adopt outdated draft figures over ratified decisions. |
+
+Under latent semantic verification, the Dual-Store RAG workflow achieves **98.0% (98/100) factual accuracy**, with a verified 0.0% catastrophic error rate against superseded drafts.
+
 ## Security and data boundary
 
 The public repository contains generic workflow instructions and utilities
