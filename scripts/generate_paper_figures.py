@@ -145,7 +145,7 @@ def generate_figure_1(output_paths):
                               facecolor="#F1F5F9", edgecolor="#0F172A", linewidth=1.1)
     ax.add_patch(callout1)
     ax.text(col2_x + col2_w/2, 41.5, "CRITICAL FINDING", ha='center', va='center', fontsize=7.8, fontweight='bold', color='#0F172A')
-    ax.text(col2_x + col2_w/2, 38.5, "20x Monetary Gap Surfaced\nRaster reveals NT$20M frozen\nvs. NT$1M narrative text",
+    ax.text(col2_x + col2_w/2, 38.5, "20x Monetary Discrepancy\nNarrative text: NT$20M\nOperative table/header: NT$1M",
             ha='center', va='top', fontsize=8.0, fontweight='bold', color='#0F172A', linespacing=1.3)
 
     # Output Pill
@@ -171,7 +171,7 @@ def generate_figure_1(output_paths):
                           facecolor="#FFFFFF", edgecolor="#64748B", linewidth=0.9)
     ax.add_patch(eng3)
     ax.text(col3_x + col3_w/2, 75.5, "Scope-Aware Arbitration", ha='center', va='center', fontsize=8.8, fontweight='bold', color='#0F172A')
-    ax.text(col3_x + col3_w/2, 72.0, "• 4-Mode Conflict Taxonomy:\n  - Temporal supersede\n  - Intra-doc contradiction\n  - Scope / geographic mismatch\n  - Direct factoid controls\n• Authority considers provenance,\n  approval status & scope",
+    ax.text(col3_x + col3_w/2, 72.0, "• 3 Conflict Modes + 1 Control:\n  - Temporal supersede\n  - Intra-doc contradiction\n  - Scope mismatch\n  - Direct factoid controls\n• Scope-aligned authority\n  considers status & provenance",
             ha='center', va='top', fontsize=7.6, color='#475569', linespacing=1.3)
 
     # Artifacts Box
