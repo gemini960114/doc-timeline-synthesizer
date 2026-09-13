@@ -24,7 +24,7 @@ def main():
     categories = [
         "Potential Matching or Coverage Issues\n[Exploratory labels; no semantic rescoring]",
         "Retrieved Evidence Not Used\n[Correct amount present in raw context]",
-        "Unasked Amount in Gold\n[Rubric requires unprompted amount]"
+        "Unasked Gold-Answer Requirement\n[Rubric requires unprompted amount]"
     ]
     counts = [13, 1, 1]
     pcts = [86.7, 6.7, 6.7]
