@@ -147,7 +147,7 @@ An exploratory post-hoc examination of the 15 automated non-matching queries und
 |:---|:---:|:---:|:---:|:---|
 | **Potential Matching or Coverage Issues** | **13** | **86.7%** | Candidate Matches | Model deduced ratified figures, but diverged in surface syntax (e.g., Chinese currency scaling, date delimiters, structured Markdown) or provided partial lists outside rigid regex patterns. |
 | **Retrieved Evidence Not Used (QA-INTRA-019)** | 1 | 6.7% | Omitted Detail | Retrieved raw context contained proposal 099's frozen amount (NT$8M) and deadline (3 months), but the generation omitted the monetary figure. |
-| **Unasked Amount in Gold (QA-INTRA-020)** | 1 | 6.7% | Rubric Over-Specification | Query prompted for release conditions; reference rubric strictly required unasked funding thresholds (NT$10M). |
+| **Unasked Gold-Answer Requirement (QA-INTRA-020)** | 1 | 6.7% | Rubric Over-Specification | Query prompted for release conditions; reference rubric strictly required unasked funding thresholds (NT$10M). |
 
 **Key Diagnostic Takeaways:**
 - **Primary Metric:** The reported **85.0% automated answer-match rate** is retained as the formal, prespecified metric for all system comparisons. No inflated 98% latent semantic accuracy is formally claimed in the absence of independent multi-annotator validation.
