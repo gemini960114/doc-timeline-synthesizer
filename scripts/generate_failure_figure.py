@@ -20,11 +20,11 @@ def main():
     
     fig, ax = plt.subplots(figsize=(8.0, 2.5), dpi=300)
     
-    # 3 categories recommended by expert (N=15)
+    # 3 categories aligned with paper text (N=15)
     categories = [
-        "Evaluator False Negatives (Surface-Form Variation)\n[Chinese units, delimiters, structured-list formatting]",
-        "Retrieval-Context Truncation\n[Line-item submerged below Top-5]",
-        "Benchmark Rubric Ambiguity\n[Unprompted constraint in rubric]"
+        "Potential Matching or Coverage Issues\n[Exploratory labels; no semantic rescoring]",
+        "Retrieved Evidence Not Used\n[Correct amount present in raw context]",
+        "Unasked Amount in Gold\n[Rubric requires unprompted amount]"
     ]
     counts = [13, 1, 1]
     pcts = [86.7, 6.7, 6.7]
@@ -53,7 +53,7 @@ def main():
     ax.set_yticklabels(categories, fontsize=8.8, fontweight='bold', color='#0F172A')
     ax.invert_yaxis()
     ax.set_xlabel("Share of Automated Non-Matches (%) [Total N=15]", fontsize=9.2, fontweight='bold', color='#0F172A', labelpad=6)
-    ax.set_title("Post-Hoc Adjudication of Automated Non-Matches (Condition 2)", fontsize=10.2, fontweight='bold', color='#0F172A', pad=10)
+    ax.set_title("Exploratory Diagnostics of Non-Matches (Condition 2)", fontsize=10.2, fontweight='bold', color='#0F172A', pad=10)
 
     for spine in ['top', 'right']:
         ax.spines[spine].set_visible(False)
@@ -64,17 +64,18 @@ def main():
     plt.tight_layout()
     
     # Save destinations
-    pdf_dest = "paper/08_arxiv_submission/source/figures/fig4_error_adjudication.pdf"
-    png_dest = "paper/08_arxiv_submission/source/figures/fig4_error_adjudication.png"
-    readme_png = "docs/images/fig4_failure_attribution.png"
+    destinations = [
+        "paper/08_arxiv_submission/source/figures/fig4_error_adjudication.pdf",
+        "paper/08_arxiv_submission/source/figures/fig4_error_adjudication.png",
+        "paper/10_taai2026/figures/fig4_error_adjudication.pdf",
+        "docs/images/fig4_failure_attribution.png"
+    ]
     
-    for path in [pdf_dest, png_dest, readme_png]:
+    for path in destinations:
         os.makedirs(os.path.dirname(path), exist_ok=True)
-    
-    fig.savefig(pdf_dest, format='pdf', bbox_inches='tight', pad_inches=0.05)
-    fig.savefig(png_dest, format='png', dpi=300, bbox_inches='tight', pad_inches=0.05)
-    fig.savefig(readme_png, format='png', dpi=300, bbox_inches='tight', pad_inches=0.05)
-    print(f"Generated successfully:\n  {pdf_dest}\n  {png_dest}\n  {readme_png}")
+        fmt = 'pdf' if path.endswith('.pdf') else 'png'
+        fig.savefig(path, format=fmt, bbox_inches='tight', pad_inches=0.05, dpi=300 if fmt == 'png' else None)
+        print(f"Saved: {path}")
     plt.close(fig)
 
 if __name__ == "__main__":

@@ -125,7 +125,7 @@ The workflow's downstream retrieval impact was evaluated on an adversarial
 100-question benchmark featuring temporal superseded revisions, multi-year
 trajectory tracking, cross-entity traps, and conflicting legislative proposals:
 
-| Retrieval & Context Architecture | Accuracy | Context Tokens (Prompt) |
+| Retrieval & Context Architecture | Answer-Match Rate | Context Tokens (Prompt) |
 |:---|---:|---:|
 | Naive Dense Vector RAG (Raw only, Top-5) | 39.0% | ~1,750 tokens |
 | Hybrid RAG (BM25 + Dense) + BGE Reranker (Top-5) | 46.0% | ~1,750 tokens |
@@ -133,26 +133,25 @@ trajectory tracking, cross-entity traps, and conflicting legislative proposals:
 | **Hierarchical Dual-Store RAG (Raw Top-5 + SSoT Top-5)** | **85.0%** | **~3,500 tokens** |
 
 The Hierarchical Dual-Store design achieves parity with full-context synthesis
-(85.0% vs. 87.0%, McNemar's $p = 0.814$) while reducing context window token
-overhead by **83.3%** and outperforming standard single-store RAG baselines
-statistically significantly ($p < 0.001$).
+(85.0% vs. 87.0%, McNemar's $p = 0.814$) while reducing the retrieved-context
+capacity budget by **~83%** (~3,500 vs. >21,000 tokens) and outperforming standard
+single-store RAG baselines statistically significantly ($p < 0.001$).
 
-### Residual Error Adjudication & Diagnostic Breakdown
+### Exploratory Diagnostics of Residual Non-Matches
 
-![Post-Hoc Adjudication of Automated Non-Matches](docs/images/fig4_failure_attribution.png)
+![Exploratory Diagnostics of Automated Non-Matches](docs/images/fig4_failure_attribution.png)
 
-A secondary post-hoc adjudication of the 15 automated non-matching queries under Condition 2 (Hierarchical Dual-Store RAG) classifies the failure modes against canonical answer provenance:
+An exploratory post-hoc examination of the 15 automated non-matching queries under Condition 2 (Hierarchical Dual-Store RAG) classifies the failure modes against canonical answer provenance:
 
-| Adjudication Category | Count ($N=15$) | Proportion | Factual Content | Diagnostic Description |
+| Diagnostic Category | Count ($N=15$) | Proportion | Content Nature | Diagnostic Description |
 |:---|:---:|:---:|:---:|:---|
-| **Evaluator False Negatives (Surface-Form Variations)** | **13** | **86.7%** | Verified Correct | Model correctly deduced ratified figures and policy intent, but diverged in surface syntax (e.g., written Chinese currency units, date delimiters, structured-list Markdown) outside rigid regex patterns. |
-| **Retrieval Context Truncation** | 1 | 6.7% | Truncated Detail | SSoT summary chunk retained program totals but omitted an isolated minor line item under strict Top-5 retrieval. |
-| **Benchmark Rubric Ambiguity** | 1 | 6.7% | Ambiguous Key | Query prompted for qualitative conditions, while the evaluation rubric expected an unprompted budget figure. |
+| **Potential Matching or Coverage Issues** | **13** | **86.7%** | Candidate Matches | Model deduced ratified figures, but diverged in surface syntax (e.g., Chinese currency scaling, date delimiters, structured Markdown) or provided partial lists outside rigid regex patterns. |
+| **Retrieved Evidence Not Used (QA-INTRA-019)** | 1 | 6.7% | Omitted Detail | Retrieved raw context contained proposal 099's frozen amount (NT$8M) and deadline (3 months), but the generation omitted the monetary figure. |
+| **Unasked Amount in Gold (QA-INTRA-020)** | 1 | 6.7% | Rubric Over-Specification | Query prompted for release conditions; reference rubric strictly required unasked funding thresholds (NT$10M). |
 
 **Key Diagnostic Takeaways:**
-- **Primary Metric:** The reported **85.0%** is retained as the formal, prespecified automated exact-match accuracy for strict cross-system statistical comparison.
-- **Substantive Accuracy:** Under secondary post-hoc adjudication, **98/100 (98.0%)** of responses contained the intended factual information without factual degradation.
-- **Clarification on Automated Trap Flags ($STER = 12.0\%$) & Conflict Resolution Rate ($CRR = 73.0\%$):** Because $CRR$ is mechanically defined as $Acc \land \neg Trap$ ($85.0\% - 12.0\% = 73.0\%$), the automated CRR of 73.0% was directly reduced by the 12 false-positive trap flags. Detailed inspection confirmed that all 12 flags were detector false alarms: 4 stemmed from substring prefix collisions on project identifiers (`CP11501-00`), while 8 occurred because the model explicitly cited superseded figures to contrast, reject, or contextualize revision history while affirming the correct ratified figure. Post-hoc adjudication found no substantive superseded-draft adoption; therefore, both STER and CRR serve as conservative automated detector-based baselines rather than substantive resolution failures.
+- **Primary Metric:** The reported **85.0% automated answer-match rate** is retained as the formal, prespecified metric for all system comparisons. No inflated 98% latent semantic accuracy is formally claimed in the absence of independent multi-annotator validation.
+- **Clarification on Automated Trap Flags ($STER = 12.0\%$) & Conflict Resolution Rate ($CRR = 73.0\%$):** Because $CRR$ is mechanically defined as $Acc \land \neg Trap$ ($85.0\% - 12.0\% = 73.0\%$), the automated CRR of 73.0% reflects the 12 automated trap flags. Detailed inspection showed that 4 flags stemmed from substring prefix matches on project IDs (`CP11501-00`) and 8 involved historical comparisons. While the model affirmed ratified figures, minor numerical contamination was noted in edge cases (e.g., QA-TEMPORAL-002 reporting a growth range of 37.7% to 41.8%). Both STER and CRR serve as conservative, deterministic detector baselines.
 
 ## Security and data boundary
 
